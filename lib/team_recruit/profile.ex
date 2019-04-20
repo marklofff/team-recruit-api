@@ -1,4 +1,7 @@
 defmodule TeamRecruit.Profile do
+  @moduledoc """
+  TODO: Profile
+  """
   import Ecto.Query, warn: false
   alias TeamRecruit.Repo
   alias TeamRecruit.Profile.OwnedGames

@@ -7,6 +7,7 @@ defmodule TeamRecruit.Repo.Migrations.CreateGames do
       add :short_name, :text
       add :app_id, :text
       add :provider, :text
+      add :icon, :text
 
       timestamps()
     end

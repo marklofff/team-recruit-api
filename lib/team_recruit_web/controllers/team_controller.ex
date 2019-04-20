@@ -46,8 +46,8 @@ defmodule TeamRecruitWeb.TeamController do
   end
 
   def add_new_game(%{assigns: %{user: user}} = conn, %{"team_id" => team_id, "game_id" => game_id}) do
-    with {:ok, team} <- TeamManager.add_game(user, team_id, game_id) do
-      json(conn, %{"success": true})
+    with {:ok, _team} <- TeamManager.add_game(user, team_id, game_id) do
+      json(conn, %{success: true})
     end
   end
 end

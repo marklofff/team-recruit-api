@@ -24,7 +24,8 @@ defmodule TeamRecruit.MixProject do
         :ueberauth_steam,
         :ueberauth_google,
         :ueberauth_discord,
-        :ueberauth_twitter
+        :ueberauth_twitter,
+        :ueberauth_identity
       ]
     ]
   end
@@ -46,25 +47,39 @@ defmodule TeamRecruit.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
+
+      # auth
       {:guardian, "~> 1.0"},
       {:ueberauth, "~> 0.6"},
-      {:ueberauth_discord, "~> 0.3"},
+      {:ueberauth_discord, github: "qwexvf/ueberauth_discord"},
       {:ueberauth_google, "~> 0.8"},
       {:ueberauth_steam, github: "qwexvf/ueberauth_steam"},
       {:ueberauth_twitter, "~> 0.2"},
+      {:ueberauth_identity, "~> 0.2"},
+      {:steam_ex, "~> 0.2.0-alpha"},
       {:oauth, github: "tim/erlang-oauth"},
       {:argon2_elixir, "~> 2.0"},
+
+      # Cors
       {:cors_plug, "~> 2.0"},
-      {:steam_ex, "~> 0.2.0-alpha"},
-      {:arc, "~> 0.11.0"},
-      {:arc_ecto, "~> 0.11.1"},
+
+      # utils
       {:elixir_uuid, "~> 1.2"},
+      {:arc, "~> 0.11.0"},
+
+      # deploy
       {:edeliver, ">= 1.6.0"},
       {:distillery, "~> 2.0", warn_missing: false},
-      {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},
+
+      # ecto
+      {:ecto_enum, "~> 1.2"},
+      {:arc_ecto, "~> 0.11.1"},
+
+      # dev and tests
       {:ex_machina, "~> 2.3", only: :test},
+      {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},
       {:mix_test_watch, "~> 0.8", only: :dev, runtime: false},
-      {:scribe, "~> 0.8", only: [:dev, :test]}
+      {:scribe, "~> 0.8", only: [:dev, :test]},
     ]
   end
 

@@ -1,4 +1,7 @@
 defmodule TeamRecruit.TeamManager.Member do
+  @moduledoc """
+  Member
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

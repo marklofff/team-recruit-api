@@ -1,4 +1,7 @@
 defmodule TeamRecruit.Games do
+  @moduledoc """
+  Games
+  """
   import Ecto.Query, warn: false
   alias TeamRecruit.Repo
 

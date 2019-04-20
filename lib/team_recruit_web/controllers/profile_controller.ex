@@ -2,7 +2,7 @@ defmodule TeamRecruitWeb.ProfileController do
   use TeamRecruitWeb, :controller
 
   alias TeamRecruit.{LinkManager, Guardian}
-  alias TeamRecruit.Accounts.{User, SteamAccount}
+  alias TeamRecruit.Accounts.{User, SocialAccount}
   alias TeamRecruit.Games
   alias TeamRecruit.Games.Game
   alias TeamRecruit.Profile
@@ -30,16 +30,15 @@ defmodule TeamRecruitWeb.ProfileController do
     end
   end
 
-  def delete_owned_games(conn, %{"user" => params}) do
-    with user <- TeamRecruit.Guardian.Plug.current_resource(conn),
-         {:ok, %SteamAccount{} = steam_account} <- LinkManager.get_steam_account(user.id) do
+  def delete_owned_games(conn, %{"user" => _params}) do
+    with user <- TeamRecruit.Guardian.Plug.current_resource(conn) do
       conn
       |> json(%{success: true})
     end
   end
 
   def get_available_games(conn, _params) do
-    with user <- TeamRecruit.Guardian.Plug.current_resource(conn),
+    with _user <- TeamRecruit.Guardian.Plug.current_resource(conn),
          games <- Games.list_games() do
       render(conn, "games_list.json", %{games: games})
     end

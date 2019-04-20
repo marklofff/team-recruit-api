@@ -1,4 +1,8 @@
 defmodule TeamRecruit.TeamAvatar do
+  @moduledoc """
+  TODO: TeamAvatar
+  """
+
   use Arc.Definition
   use Arc.Ecto.Definition
 

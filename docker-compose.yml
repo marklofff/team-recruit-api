@@ -17,6 +17,8 @@ services:
       - '4000:4000'
     depends_on:
       - db
+    env_file:
+      - .env
     command: iex -S mix phx.server
     environment:
       NODE_ENV: 'development'

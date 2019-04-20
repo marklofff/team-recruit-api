@@ -18,14 +18,14 @@ defmodule TeamRecruitWeb.UserController do
 
   def register(conn, %{"user" => user_params}) do
     with {:ok, %User{} = user} <- Accounts.create_user(user_params),
-         {:ok, token, _claims} <- Guardian.encode_and_sign(user) do
+         {:ok, _token, _claims} <- Guardian.encode_and_sign(user) do
       conn
       |> render("show.json", user: user)
     end
   end
 
-  def login(conn, %{"user" => %{"password" => password, "email" => email}} = params) do
-   case Accounts.sign_in(params["user"]) do
+  def login(conn, %{"user" => user}) do
+   case Accounts.sign_in(user) do
      {:error, message} ->
        {:error, :not_found}
      {:ok, %User{} = user} ->
@@ -61,5 +61,9 @@ defmodule TeamRecruitWeb.UserController do
     with {:ok, %User{}} <- Accounts.delete_user(user) do
       send_resp(conn, :no_content, "")
     end
+  end
+
+  def me(%{assigns: %{user: user}} = conn, _params) do
+    render(conn, "user.json", %{user: user})
   end
 end

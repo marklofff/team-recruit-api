@@ -38,16 +38,20 @@ defmodule TeamRecruit.TeamManager do
 
   """
   def get_team!(id) do 
-    Repo.get!(Team, id)
-    |> Repo.preload([:user, :members, :awards, :games])
+    query =
+      from t in Team,
+      where: t.id == ^id,
+      preload: [:user, :members, :awards, :games]
+
+    Repo.one!(query)
   end
 
   def get_team_by_tag!(tag) do 
     query = from t in Team,
-        where: t.tag == ^tag
+      where: t.tag == ^tag,
+      preload: [:user, :members, :awards, :games]
 
     Repo.one!(query)
-    |> Repo.preload([:user, :members, :awards, :games])
   end
 
   @doc """
@@ -117,8 +121,11 @@ defmodule TeamRecruit.TeamManager do
     {:ok, Repo.one(query)}
   end
 
-  def add_game(user, team_id, game_id, attrs \\ %{}) do
-    team = get_team!(team_id) |> Repo.preload([:user, :games])
+  def add_game(user, team_id, game_id, _attrs \\ %{}) do
+    team =
+      get_team!(team_id)
+      |> Repo.preload([:user, :games])
+
     game = TeamRecruit.Games.get_game!(game_id)
 
     if is_team_leader?(user, team) do

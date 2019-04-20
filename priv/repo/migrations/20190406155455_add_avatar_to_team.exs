@@ -6,5 +6,7 @@ defmodule TeamRecruit.Repo.Migrations.AddAvatarToTeam do
       add :avatar, :string
       add :uuid, :string
     end
+
+    create unique_index(:users, [:uuid])
   end
 end
