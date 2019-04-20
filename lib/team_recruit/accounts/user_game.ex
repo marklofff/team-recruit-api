@@ -1,4 +1,7 @@
 defmodule TeamRecruit.TeamManager.UserGame do
+  @moduledoc """
+  UserGame
+  """
   use Ecto.Schema
   import Ecto.Changeset
 
