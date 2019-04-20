@@ -1,8 +1,7 @@
-defmodule TeamRecruit.Avatar do
+defmodule TeamRecruit.GameIcon do
   @moduledoc """
-  TODO: Avatar
+  TODO: Gameicon
   """
-
   use Arc.Definition
   use Arc.Ecto.Definition
 
@@ -44,7 +43,7 @@ defmodule TeamRecruit.Avatar do
   # def storage_dir(version, {file, scope}) do
   #   "uploads/user/avatars/#{scope.id}"
   # end
-  def storage_dir(_version, {_file, scope}) do
+  def storage_dir(version, {file, scope}) do
     "uploads/user/avatars/#{scope.uuid}"
   end
 
