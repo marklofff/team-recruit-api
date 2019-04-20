@@ -10,36 +10,31 @@ defmodule TeamRecruitWeb.UserView do
     %{data: render_one(user, UserView, "user.json")}
   end
 
-  def render("login.json", %{user: user, token: token}) do
+  def render("social_accounts.json", %{social_accounts: social_accounts}) do
     %{
-      data: render_one(user, UserView, "minimal_user.json"),
-      token: token
+      name: social_accounts.name,
+      avatar: social_accounts.avatar,
+      uid: social_accounts.uid,
+      provider: social_accounts.provider
     }
   end
 
   def render("user.json", %{user: user}) do
     %{id: user.id,
-      name: user.name,
-      password: user.password,
-      email: user.email,
-      userId: user.userId,
-      teams: render_many(user.teams, TeamView, "team.json", as: :team)
-    }
-  end
-  def render("user.json", %{user: user}) do
-    %{id: user.id,
-      name: user.name,
-      password: user.password,
-      email: user.email,
-      userId: user.userId,
-      teams: render_many(user.teams, TeamView, "team.json", as: :team)
+      nickname: user.nickname,
+      bio: user.bio,
+      avatar: user.avatar,
+      teams: render_many(user.teams, TeamView, "team.json", as: :team),
+      social_accounts: render_many(user.social_accounts, __MODULE__, "social_accounts.json", as: :social_accounts)
     }
   end
 
-  def render("minimal_user.json", %{user: user}) do
+  def render("authenticated_user.json", %{user: user}) do
     %{id: user.id,
-      name: user.name,
-      userId: user.userId,
+      nickname: user.nickname,
+      bio: user.bio,
+      avatar: user.avatar,
+      social_accounts: render_many(user.social_accounts, __MODULE__, "social_accounts.json", as: :social_accounts)
     }
   end
 end
