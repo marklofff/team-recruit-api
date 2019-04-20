@@ -1,5 +1,6 @@
 defmodule TeamRecruit.Games.Game do
   use Ecto.Schema
+  use Arc.Ecto.Schema
   import Ecto.Changeset
   alias TeamRecruit.TeamManager.Team
   alias TeamRecruit.Utils

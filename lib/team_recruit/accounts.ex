@@ -4,96 +4,42 @@ defmodule TeamRecruit.Accounts do
   """
 
   import Ecto.Query, warn: false
+  alias Ueberauth.Auth
   alias TeamRecruit.Repo
-
   alias TeamRecruit.Accounts.User
+  alias TeamRecruit.Accounts.SocialAccounts
 
-  @doc """
-  Returns the list of users.
-
-  ## Examples
-
-      iex> list_users()
-      [%User{}, ...]
-
-  """
   def list_users do
     Repo.all(User)
   end
 
-  @doc """
-  Gets a single user.
-
-  Raises `Ecto.NoResultsError` if the User does not exist.
-
-  ## Examples
-
-      iex> get_user!(123)
-      %User{}
-
-      iex> get_user!(456)
-      ** (Ecto.NoResultsError)
-
-  """
   def get_user!(id) do
-    Repo.get!(User, id)
-    |> Repo.preload([:teams, :games])
+    query =
+      from u in User,
+      where: u.id == ^id,
+      preload: [:social_accounts, :teams, :games]
+
+    Repo.one!(query)
   end
 
-  @doc """
-  Gets a single user.
-
-  Raises `Ecto.NoResultsError` if the User does not exist.
-
-  ## Examples
-
-      iex> get_user!(123)
-      %User{}
-
-      iex> get_user!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_user_by_userId!(userId) do
-    query = from u in User,
-      where: u.userId == ^userId
-
-    Repo.one(query)
-    |> Repo.preload([{:teams, [:user, :games, :awards]}, :games])
-  end
-
-  @doc """
-  Creates a user.
-
-  ## Examples
-
-      iex> create_user(%{field: value})
-      {:ok, %User{}}
-
-      iex> create_user(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def create_user(attrs \\ %{}) do
-    {:ok, %User{} = user} = %User{}
-    |> User.changeset(attrs)
-    |> Repo.insert()
+    {:ok, user} =
+      %User{}
+      |> User.changeset(attrs)
+      |> Repo.insert()
 
-    {:ok, Repo.preload(user, [:steam_account, :teams])}
+    user = Repo.preload(user, [:social_accounts, :teams, :games])
+    {:ok, user}
   end
 
-  @doc """
-  Updates a user.
+  def update_user(%User{} = user, attrs) do
+    {:ok, result} =
+      user
+      |> User.changeset(attrs)
+      |> Repo.update()
 
-  ## Examples
-
-      iex> update_user(user, %{field: new_value})
-      {:ok, %User{}}
-
-      iex> update_user(user, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
+    {:ok, Repo.preload(result, [{:teams, [:user, :games, :awards]}, :games])}
+  end
   def update_user(%User{} = user, attrs) do
     {:ok, result} =
       user
@@ -103,31 +49,10 @@ defmodule TeamRecruit.Accounts do
     {:ok, Repo.preload(result, [{:teams, [:user, :games, :awards]}, :games])}
   end
 
-  @doc """
-  Deletes a User.
-
-  ## Examples
-
-      iex> delete_user(user)
-      {:ok, %User{}}
-
-      iex> delete_user(user)
-      {:error, %Ecto.Changeset{}}
-
-  """
   def delete_user(%User{} = user) do
     Repo.delete(user)
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking user changes.
-
-  ## Examples
-
-      iex> change_user(user)
-      %Ecto.Changeset{source: %User{}}
-
-  """
   def change_user(%User{} = user) do
     User.changeset(user, %{})
   end
@@ -149,6 +74,60 @@ defmodule TeamRecruit.Accounts do
       user ->
         {:ok, user}
     end
+  end
+
+  def find_or_create(%Auth{provider: provider, info: info, uid: uid} = auth) do
+    params = %{"provider" => provider, "uid" => uid}
+    # find any user that is connected to this thirdpaty account
+
+    with %User{} = user <- get_user_by_provider(params) do
+      {:ok, Repo.preload(user, [:social_accounts, :teams])}
+    else
+      nil ->
+        auth
+        |> TeamRecruit.Representer.to_map()
+        |> create_account(provider)
+      user ->
+        user
+    end
+  end
+
+  def find_or_create(%User{} = current_user, %Auth{provider: provider, info: info, uid: uid} = auth) do
+    user_object = TeamRecruit.Representer.to_map(auth)
+    provider_list = ProviderEnum.__enum_map__()
+
+    provider_exists? =
+      User
+      |> join(:left, [u], s in assoc(u, :social_accounts), on: s.uid == ^to_string(uid))
+      |> where([u, s], s.provider == ^provider_list[provider])
+      |> Repo.one()
+
+    user =
+      case provider_exists? do # if user does not have this provider
+        nil ->
+          user_object = Map.put(user_object, :provider, provider)
+
+          current_user
+          |> update_user(%{social_accounts: [user_object | current_user.social_accounts]})
+        user ->
+          user
+      end
+
+    {:ok, Repo.preload(user, [:social_accounts])}
+  end
+
+  def get_user_by_provider(%{"provider" => provider, "uid" => uid}) do
+    provider_list = ProviderEnum.__enum_map__()
+
+    User
+    |> join(:left, [u], s in assoc(u, :social_accounts), on: s.uid == ^to_string(uid))
+    |> where([u, s], s.provider == ^provider_list[provider])
+    |> Repo.one()
+  end
+
+  def create_account(user_object, provider) do
+    user_object = Map.put(user_object, :provider, provider)
+    create_user(%{social_accounts: [user_object]})
   end
 
   defp verify_pass(nil, _), do: {:error, "Incorrect email or password."}
