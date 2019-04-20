@@ -11,7 +11,6 @@
 # and so on) as they will fail if something goes wrong.
 alias TeamRecruit.Repo
 alias TeamRecruit.Games.Game
-alias TeamRecruit.Accounts
 
 games = [ 
   [   
@@ -38,12 +37,3 @@ for game <- games do
     }   
   )
 end
-
-Accounts.create_user(%{
-  "email" => "test@example.com",
-  "password" => "test",
-  "password_confirmation" => "test",
-  "userId" => "test_user",
-  "name" => "テスト",
-  "bio" => "test"
-})

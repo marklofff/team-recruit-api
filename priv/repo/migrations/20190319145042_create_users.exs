@@ -3,15 +3,10 @@ defmodule TeamRecruit.Repo.Migrations.CreateUsers do
 
   def change do
     create table(:users) do
-      add :name, :string
-      add :password, :string
-      add :email, :string
-      add :userId, :string
+      add :nickname, :string
       add :bio, :text
 
       timestamps()
     end
-
-    create unique_index(:users, [:email])
   end
 end
