@@ -1,4 +1,7 @@
 defmodule TeamRecruit.Factory do
+  @moduledoc """
+  Factories
+  """
   use ExMachina.Ecto, repo: TeamRecruit.Repo
 
   def user_factory do

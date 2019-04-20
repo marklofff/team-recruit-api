@@ -1,4 +1,7 @@
 defmodule TeamRecruitWeb.UserControllerTest do
+  @moduledoc """
+  UserControllerTest
+  """
   use TeamRecruitWeb.ConnCase
   import TeamRecruit.Factory
 

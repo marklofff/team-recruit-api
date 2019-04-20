@@ -1,4 +1,8 @@
 defmodule TeamRecruitWeb.UserControllerTest do
+  @moduledoc """
+  The Accounts context.
+  """
+
   use TeamRecruitWeb.ConnCase
   import TeamRecruit.Factory
 
@@ -35,15 +39,15 @@ defmodule TeamRecruitWeb.UserControllerTest do
       current_user = %{
         id: user.id,
         name: user.name,
-        password: user.password,
         email: user.email,
-        userId: user.userId,
+        uid: user.uid,
       }
+
       params = Map.merge(@update_attrs, current_user)
       conn = put(conn, Routes.user_path(conn, :update, %{user: params}))
       response = json_response(conn, 200)["data"]
       assert %{"id" => ^id} = response
-      %{"userId" => userId} = response
+      %{"userId" => user_id} = response
 
       conn = get(conn, Routes.user_path(conn, :show, userId))
 
