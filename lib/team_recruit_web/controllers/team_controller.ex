@@ -6,8 +6,8 @@ defmodule TeamRecruitWeb.TeamController do
 
   action_fallback TeamRecruitWeb.FallbackController
 
-  def index(conn, _params) do
-    teams = TeamManager.list_teams()
+  def index(conn, params) do
+    teams = TeamManager.paginate_teams(params)
     render(conn, "index.json", teams: teams)
   end
 

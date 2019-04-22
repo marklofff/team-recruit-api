@@ -116,7 +116,7 @@ defmodule TeamRecruit.Accounts do
     {:ok, Repo.preload(user, [:social_accounts])}
   end
 
-  def get_user_by_provider(%{"provider" => provider, "uid" => uid}) do
+  def get_user_by_provider(%{"provider" => provider, "uid" => uid} = params) do
     provider_list = ProviderEnum.__enum_map__()
 
     User
@@ -127,7 +127,14 @@ defmodule TeamRecruit.Accounts do
 
   def create_account(user_object, provider) do
     user_object = Map.put(user_object, :provider, provider)
-    create_user(%{social_accounts: [user_object]})
+    IO.inspect user_object
+
+    nickname =
+      user_object.name
+      |> String.split
+      |> Enum.at(-1)
+
+    create_user(%{nickname: nickname, social_accounts: [user_object]})
   end
 
   defp verify_pass(nil, _), do: {:error, "Incorrect email or password."}

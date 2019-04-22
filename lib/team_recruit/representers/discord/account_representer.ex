@@ -2,7 +2,7 @@ defmodule TeamRecruit.Representer.DiscordRepresenter do
   use TeamRecruit.Representer.Map
 
   property :email
-  property :name
-  property :avatar, as: :picture
-  property :uid, as: :sub
+  property :name, as: :username
+  property :avatar
+  property :uid, as: :id
 end

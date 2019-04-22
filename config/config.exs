@@ -78,6 +78,7 @@ config :ueberauth, Ueberauth.Strategy.Discord.OAuth,
 
 config :ueberauth, Ueberauth.Strategy.Twitter.OAuth,
   consumer_key: System.get_env("TWITTER_CONSUMER_KEY"),
-  consumer_secret: System.get_env("TWITTER_CONSUMER_SECRET")
+  consumer_secret: System.get_env("TWITTER_CONSUMER_SECRET"),
+  redirect_uri: "http://localhost:3000/auth/twitter/callback"
 
 import_config "#{Mix.env()}.exs"

@@ -1,7 +1,7 @@
 defmodule TeamRecruit.Representer do
   alias Ueberauth.Auth
-  alias TeamRecruit.Representer.{SteamRepresenter, GoogleRepresenter, TwitterRresenter}
-  alias TeamRecruit.Representer.{SteamStruct, GoogleStruct, TwitterStruct}
+  alias TeamRecruit.Representer.{SteamRepresenter, GoogleRepresenter, TwitterRresenter, DiscordRepresenter}
+  alias TeamRecruit.Representer.{SteamStruct, GoogleStruct, TwitterStruct, DiscordStruct}
 
   def to_map(%Auth{provider: provider,
     credentials: _,
@@ -21,5 +21,8 @@ defmodule TeamRecruit.Representer do
   end
   def _to_map(%{"provider" => :twitter, "info" => info, "user" => user}) do
     TwitterRresenter.to_map(user, as: %TwitterStruct{})
+  end
+  def _to_map(%{"provider" => :discord, "info" => info, "user" => user}) do
+    DiscordRepresenter.to_map(user, as: %DiscordStruct{})
   end
 end

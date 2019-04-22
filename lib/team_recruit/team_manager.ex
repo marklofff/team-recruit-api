@@ -17,10 +17,17 @@ defmodule TeamRecruit.TeamManager do
       [%Team{}, ...]
 
   """
-  def list_teams do
-    query = from u in Team,
-      preload: [:user, :members, :awards, :games]
-    Repo.all(query)
+  def list_teams(params \\ %{}) do
+    Team
+    |> order_by(desc: :inserted_at)
+    |> preload([:members])
+    |> Repo.all()
+  end
+
+  def paginate_teams(params \\ %{}) do
+    Team
+    |> preload([:user, :members, :games, :awards])
+    |> Repo.paginate(params)
   end
 
   @doc """
@@ -91,15 +98,17 @@ defmodule TeamRecruit.TeamManager do
   def create_team(user_id, attrs \\ %{}) do
     game_ids = Enum.map(attrs["games"], fn(x) -> x["id"] end)
 
-    games = TeamRecruit.Games.Game
-            |> where([p], p.id in ^game_ids)
-            |> Repo.all
+    games =
+      TeamRecruit.Games.Game
+      |> where([p], p.id in ^game_ids)
+      |> Repo.all
     
 
-    team = %Team{user_id: user_id}
-            |> Team.changeset(attrs)
-            |> Ecto.Changeset.put_assoc(:games, games) 
-            |> Repo.insert!()
+    team =
+      %Team{user_id: user_id}
+      |> Team.changeset(attrs)
+      |> Ecto.Changeset.put_assoc(:games, games) 
+      |> Repo.insert!()
 
     query = from t in Team,
       where: t.id == ^team.id,

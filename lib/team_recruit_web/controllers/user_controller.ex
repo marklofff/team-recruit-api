@@ -6,6 +6,10 @@ defmodule TeamRecruitWeb.UserController do
 
   action_fallback TeamRecruitWeb.FallbackController
 
+  def me(%{assigns: %{user: %User{} = user}} = conn, _params) do
+    render(conn, "user.json", %{user: user})
+  end
+
   def index(conn, _params) do
     users = Accounts.list_users()
     render(conn, "index.json", users: users)
@@ -26,7 +30,7 @@ defmodule TeamRecruitWeb.UserController do
 
   def login(conn, %{"user" => user}) do
    case Accounts.sign_in(user) do
-     {:error, message} ->
+     {:error, _message} ->
        {:error, :not_found}
      {:ok, %User{} = user} ->
        {:ok, token, _claims} = Guardian.encode_and_sign(user)
@@ -39,7 +43,7 @@ defmodule TeamRecruitWeb.UserController do
       user = Accounts.get_user!(current_resource.id)
 
       case Accounts.update_user(user, %{avatar: avatar}) do
-        {:ok, %User{} = user} ->
+        {:ok, %User{} = _user} ->
           json(conn, %{"success" => true})
         {:error, _} ->
           json(conn, %{"success" => false})
@@ -63,7 +67,4 @@ defmodule TeamRecruitWeb.UserController do
     end
   end
 
-  def me(%{assigns: %{user: user}} = conn, _params) do
-    render(conn, "user.json", %{user: user})
-  end
 end

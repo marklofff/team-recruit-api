@@ -40,6 +40,6 @@ defmodule TeamRecruit.TeamManager.Team do
     |> validate_required([:name, :tag])
     |> unique_constraint(:tag)
     |> TeamRecruit.Utils.check_uuid
-    |> cast_attachments(attrs, [:avatar])
+    |> cast_attachments(attrs, [:avatar], allow_urls: true)
   end
 end
