@@ -102,7 +102,6 @@ defmodule TeamRecruit.TeamManager do
       TeamRecruit.Games.Game
       |> where([p], p.id in ^game_ids)
       |> Repo.all
-    
 
     team =
       %Team{user_id: user_id}
