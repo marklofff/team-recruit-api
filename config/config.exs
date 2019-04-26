@@ -50,35 +50,4 @@ case Mix.env() do
       api_endpoint: "dev.devdox.net"
 end
 
-config :ueberauth, Ueberauth,
-  base_path: "/api/auth",
-  providers: [
-    twitter: {Ueberauth.Strategy.Twitter, []},
-    discord: {Ueberauth.Strategy.Discord, []},
-    google: {Ueberauth.Strategy.Google, [default_scope: "email profile"]},
-    steam: {Ueberauth.Strategy.Steam, []},
-    identity: {Ueberauth.Strategy.Identity, [
-      callback_methods: ["POST"]
-    ]}
-  ]
-
-config :ueberauth, Ueberauth.Strategy.Steam,
-  api_key: System.get_env("STEAM_API_KEY"),
-  return_to: "http://localhost:3000/auth/steam/callback"
-  
-config :ueberauth, Ueberauth.Strategy.Google.OAuth,
-  client_id: System.get_env("GOOGLE_CLIENT_ID"),
-  client_secret: System.get_env("GOOGLE_CLIENT_SECRET"),
-  redirect_uri: "http://localhost:3000/auth/google/callback"
-
-config :ueberauth, Ueberauth.Strategy.Discord.OAuth,
-  client_id: System.get_env("DISCORD_CLIENT_ID"),
-  client_secret: System.get_env("DISCORD_CLIENT_SECRET"),
-  redirect_uri: "http://localhost:3000/auth/discord/callback"
-
-config :ueberauth, Ueberauth.Strategy.Twitter.OAuth,
-  consumer_key: System.get_env("TWITTER_CONSUMER_KEY"),
-  consumer_secret: System.get_env("TWITTER_CONSUMER_SECRET"),
-  redirect_uri: "http://localhost:3000/auth/twitter/callback"
-
 import_config "#{Mix.env()}.exs"
