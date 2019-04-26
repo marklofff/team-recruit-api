@@ -7,7 +7,7 @@ defmodule TeamRecruitWeb.UserController do
   action_fallback TeamRecruitWeb.FallbackController
 
   def me(%{assigns: %{user: %User{} = user}} = conn, _params) do
-    render(conn, "user.json", %{user: user})
+    render(conn, "authenticated_user.json", %{user: user})
   end
 
   def index(conn, _params) do
