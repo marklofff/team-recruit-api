@@ -20,13 +20,8 @@ defmodule TeamRecruit.MixProject do
   def application do
     [
       mod: {TeamRecruit.Application, []},
-      extra_applications: [:logger, :runtime_tools, :arc_ecto, :edeliver,
-        #:ueberauth_steam,
-        #:ueberauth_google,
-        #:ueberauth_discord,
-        #:ueberauth_twitter,
-        #:ueberauth_identity,
-        #:scrivener_ecto
+      extra_applications: [:logger, :runtime_tools, :arc_ecto,
+        :edeliver, :httpoison
       ]
     ]
   end
@@ -68,6 +63,7 @@ defmodule TeamRecruit.MixProject do
       # utils
       {:elixir_uuid, "~> 1.2"},
       {:arc, "~> 0.11.0"},
+      {:httpoison, "~> 1.4"},
 
       # deploy
       {:edeliver, ">= 1.6.0"},
@@ -83,6 +79,8 @@ defmodule TeamRecruit.MixProject do
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},
       {:mix_test_watch, "~> 0.8", only: :dev, runtime: false},
       {:scribe, "~> 0.8", only: [:dev, :test]},
+      {:ex_spec, "~> 2.0", only: :test},
+      {:faker, "~> 0.12", only: :test}
     ]
   end
 
