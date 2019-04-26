@@ -17,6 +17,7 @@ defmodule TeamRecruitWeb.Router do
     plug Guardian.Plug.VerifyHeader, realm: "Bearer"
     plug Guardian.Plug.LoadResource, allow_blank: true
     plug TeamRecruit.Plugs.FetchAvailableUserPlug
+    plug TeamRecruit.Plugs.ReformatParamsPlug
   end
 
   # auth required
@@ -53,9 +54,7 @@ defmodule TeamRecruitWeb.Router do
     # thirdparty
     scope "/auth" do
       pipe_through :fetch_available_user
-      get "/:provider", AuthController, :request
-      get "/:provider/callback", AuthController, :callback
-      post "/identity/callback", AuthController, :identity_callback
+      post "/:provider", AuthController, :callback
     end
 
     # authentication
