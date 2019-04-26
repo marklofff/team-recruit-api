@@ -49,15 +49,13 @@ for x <- 1..50 do
   image = HTTPoison.get! "https://picsum.photos/id/#{x}/200/300"
   File.write!("candidate_pics/#{x}.jpeg", image.body, [:binary]) 
 
-  upload= 
+  upload = 
     %Plug.Upload{
       content_type: "image/jpeg",
       filename: "#{x}.jpeg",
       path: Path.expand("candidate_pics/#{x}.jpeg") |> Path.absname()
     }
 
-  IO.inspect x
-  IO.inspect image
   new_team = 
     %Team{
       user_id: user.id,

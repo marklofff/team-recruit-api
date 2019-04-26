@@ -1,3 +1,3 @@
 defmodule TeamRecruit.Representer.DiscordStruct do
-  defstruct [:email, :username, :avatar, :id]
+  defstruct [:email, :username, :avatar, :id, :provider]
 end

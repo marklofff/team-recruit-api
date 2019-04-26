@@ -11,6 +11,7 @@ defmodule TeamRecruit.Accounts.User do
     field :nickname, :string
     field :uuid, :string
     field :bio, :string
+    field :provider, ProviderEnum
 
     # has_one :identity_account, TeamRecruit.Accounts.SteamAccount
     has_many :social_accounts, TeamRecruit.Accounts.SocialAccounts
@@ -24,7 +25,7 @@ defmodule TeamRecruit.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:uuid, :nickname])
+    |> cast(attrs, [:uuid, :nickname, :provider])
     |> cast_assoc(:social_accounts)
     |> validate_required([])
     |> TeamRecruit.Utils.check_uuid
