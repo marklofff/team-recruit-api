@@ -1,0 +1,21 @@
+{
+  "id": "105528888133805693412",
+  "idisplayName": "Marcelo Higa",
+  "iname": { "familyName": "Higa", "givenName": "Marcelo" },
+  "iphotos":[
+    {"value": "https://lh4.googleusercontent.com/-GgUMCp8LCxk/AAAAAAAAAAI/AAAAAAAAAHI/PQRLyg2X_5k/photo.jpg" }
+  ],
+  "provider": "google",
+  "_raw":
+  "{\n  "sub": "105528888133805693412",\n  "name": "Marcelo Higa",\n  "given_name": "Marcelo",\n  "family_name": "Higa",\n  "profile": "https://plus.google.com/105528888133805693412",\n  "picture": "https://lh4.googleusercontent.com/-GgUMCp8LCxk/AAAAAAAAAAI/AAAAAAAAAHI/PQRLyg2X_5k/photo.jpg",\n  "locale": "en"\n}",
+  "_json": {
+    "sub": "105528888133805693412",
+    "name": "Marcelo Higa",
+    "given_name": "Marcelo",
+    "family_name": "Higa",
+    "profile": "https://plus.google.com/105528888133805693412",
+    "picture": "https://lh4.googleusercontent.com/-GgUMCp8LCxk/AAAAAAAAAAI/AAAAAAAAAHI/PQRLyg2X_5k/photo.jpg",
+    "locale": "en"
+  }
+}
+
