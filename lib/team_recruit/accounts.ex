@@ -157,6 +157,12 @@ defmodule TeamRecruit.Accounts do
     |> Repo.one()
   end
 
+  def get_user_by_uuid!(uuid) do
+    User
+    |> where([u], u.uuid == ^uuid)
+    |> Repo.one()
+  end
+
   defp get_by_email(email) when is_binary(email) do
     query = from u in User, 
       where: u.email == ^email,

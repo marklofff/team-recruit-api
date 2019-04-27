@@ -24,6 +24,7 @@ defmodule TeamRecruitWeb.UserView do
       nickname: user.nickname,
       bio: user.bio,
       avatar: user.avatar,
+      uuid: user.uuid
     }
   end
 
@@ -32,6 +33,7 @@ defmodule TeamRecruitWeb.UserView do
       nickname: user.nickname,
       bio: user.bio,
       avatar: user.avatar,
+      uuid: user.uuid,
       social_accounts: render_many(user.social_accounts, __MODULE__, "social_accounts.json", as: :social_accounts)
     }
   end

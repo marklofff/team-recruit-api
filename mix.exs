@@ -46,6 +46,7 @@ defmodule TeamRecruit.MixProject do
 
       # auth
       {:guardian, "~> 1.0"},
+      {:guardian_db, "~> 2.0"},
       #{:ueberauth, "~> 0.6"},
       #{:ueberauth_discord, github: "qwexvf/ueberauth_discord"},
       #{:ueberauth_google, "~> 0.8"},

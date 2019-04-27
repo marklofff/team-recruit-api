@@ -15,8 +15,8 @@ defmodule TeamRecruitWeb.UserController do
     render(conn, "index.json", users: users)
   end
 
-  def show(conn, %{"userId" => userId}) do
-    user = Accounts.get_user_by_userId!(userId)
+  def show(conn, %{"uuid" => uuid}) do
+    user = Accounts.get_user_by_uuid!(uuid)
     render(conn, "user.json", user: user)
   end
 

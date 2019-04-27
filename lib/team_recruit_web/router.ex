@@ -68,7 +68,7 @@ defmodule TeamRecruitWeb.Router do
     # user
     patch "/user", UserController, :update
     put "/user", UserController, :update
-    get "/user/:userId", UserController, :show
+    get "/profile/:uuid", UserController, :show
 
     # games
     get "/games", GameController, :show
