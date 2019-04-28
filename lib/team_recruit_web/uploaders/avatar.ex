@@ -3,16 +3,14 @@ defmodule TeamRecruit.Avatar do
   TODO: Avatar
   """
 
+  # Include ecto support (requires package arc_ecto installed):
   use Arc.Definition
   use Arc.Ecto.Definition
 
-  # Include ecto support (requires package arc_ecto installed):
-  # use Arc.Ecto.Definition
-
-  @versions [:original, :thumb]
 
   # To add a thumbnail version:
-  # @versions [:original, :thumb]
+  @versions [:original, :thumb]
+
 
   # Override the bucket on a per definition basis:
   # def bucket do
@@ -45,7 +43,8 @@ defmodule TeamRecruit.Avatar do
   #   "uploads/user/avatars/#{scope.id}"
   # end
   def storage_dir(_version, {_file, scope}) do
-    "uploads/user/avatars/#{scope.uuid}"
+    IO.inspect scope
+    "uploads/user/avatars/#{scope.uuid}/#{scope.provider}"
   end
 
   # Provide a default URL if there hasn't been a file uploaded

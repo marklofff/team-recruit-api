@@ -127,6 +127,7 @@ defmodule TeamRecruit.Accounts do
           |> Enum.at(-1)
 
         create_user(%{
+          avatar: profile.avatar,
           provider: profile.provider, # register with this provider
           nickname: nickname,
           social_accounts: [profile]

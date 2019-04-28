@@ -29,6 +29,6 @@ defmodule TeamRecruit.Accounts.User do
     |> cast_assoc(:social_accounts)
     |> validate_required([])
     |> TeamRecruit.Utils.check_uuid
-    |> cast_attachments(attrs, [:avatar])
+    |> cast_attachments(attrs, [:avatar], allow_urls: true)
   end
 end
