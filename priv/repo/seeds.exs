@@ -28,6 +28,12 @@ games = [
     {:short_name, "PUBG"},
     {:provider, "steam"}
   ],  
+  [   
+    {:app_id, ""},
+    {:full_name, "Apex Legends"},
+    {:short_name, "APEX"},
+    {:provider, "origin"}
+  ],  
 ]
 
 for game <- games do
@@ -43,9 +49,9 @@ end
 
 HTTPoison.start
 
-{:ok, user} = Accounts.create_user(%{nickname: "Donald", bio: "Hello World!"})
-
 for x <- 1..50 do
+  {:ok, user} = Accounts.create_user(%{nickname: "user#{x}", bio: "Bio #{x}"})
+
   image = HTTPoison.get! "https://picsum.photos/id/#{x}/200/300"
   File.write!("candidate_pics/#{x}.jpeg", image.body, [:binary]) 
 
@@ -64,7 +70,26 @@ for x <- 1..50 do
       bio: "Team #{x}",
     }
 
-  Repo.insert!(
+  team = Repo.insert!(
     Team.changeset(new_team, %{"avatar" => upload})
   )
+
+  if x > 5 do
+    for x <- 1..5 do
+      TeamRecruit.TeamManager.add_member(team.id, x)
+    end
+  end
+
+  TeamRecruit.TeamManager.add_game(team.id, 1)
+  TeamRecruit.TeamManager.add_game(team.id, 2)
+  TeamRecruit.TeamManager.add_game(team.id, 3)
 end
+
+{:ok, user} =
+  TeamRecruit.Accounts.get_user!(10)
+  |> User.update_changeset(%{email: "asdfasdf@gmail.com", password: "asdfasdfasdf"})
+  |> TeamRecruit.Repo.update()
+
+{:ok, token, _claims} = TeamRecruit.Guardian.encode_and_sign(user, %{})
+
+IO.inspect token
