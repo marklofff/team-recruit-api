@@ -21,18 +21,29 @@ defmodule TeamRecruitWeb.Router do
   end
 
   # auth required
-  scope "/api", TeamRecruitWeb do
+  scope "/api/v1", TeamRecruitWeb do
     pipe_through [:api, :authenticated]
 
     get "/me", UserController, :me
-    # teams
-    post "/teams", TeamController, :create
-    patch "/teams/:id", TeamController, :update
-    put "/teams/:id", TeamController, :update
-    delete "/teams/:id", TeamController, :delete
     get "/me/teams", TeamController, :get_my_teams
-    post "/teams/add_game", TeamController, :add_new_game
+    get "/me/notifications", InvitationController, :index
+
+    # teams
+    post   "/teams", TeamController, :create
+    patch  "/teams/:id", TeamController, :update
+    put    "/teams/:id", TeamController, :update
+    delete "/teams/:id", TeamController, :delete
+    post   "/teams/add_game", TeamController, :add_new_game
     # end of teams
+
+    # create new invitation
+    post "/team/:id/invitation/", InvitationController, :create
+    # accepts an invitation
+    patch "/team/:id/invitation/:id/accept", InvitationController, :accept_invitation
+    # deletes an invitation
+    delete "/team/:id/invitation/:id/cancel", InvitationController, :delete_invitation
+    # reject an invitation
+    patch "/team/:id/invitation/:id/reject", InvitationController, :reject_invitation
 
     scope "/profile" do
       get "/owned_games", ProfileController, :get_owned_games
@@ -48,7 +59,7 @@ defmodule TeamRecruitWeb.Router do
   end
 
   # auth not required
-  scope "/api", TeamRecruitWeb do
+  scope "/api/v1", TeamRecruitWeb do
     pipe_through :api
 
     # thirdparty
@@ -72,5 +83,7 @@ defmodule TeamRecruitWeb.Router do
 
     # games
     get "/games", GameController, :show
+    # find players
+    get "/players", UserController, :index
   end
 end

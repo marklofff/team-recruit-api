@@ -43,7 +43,6 @@ defmodule TeamRecruit.Avatar do
   #   "uploads/user/avatars/#{scope.id}"
   # end
   def storage_dir(_version, {_file, scope}) do
-    IO.inspect scope
     "uploads/user/avatars/#{scope.uuid}/#{scope.provider}"
   end
 

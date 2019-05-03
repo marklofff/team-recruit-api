@@ -20,37 +20,6 @@ defmodule TeamRecruitWeb.UserController do
     render(conn, "user.json", user: user)
   end
 
-  def register(conn, %{"user" => user_params}) do
-    with {:ok, %User{} = user} <- Accounts.create_user(user_params),
-         {:ok, _token, _claims} <- Guardian.encode_and_sign(user) do
-      conn
-      |> render("show.json", user: user)
-    end
-  end
-
-  def login(conn, %{"user" => user}) do
-   case Accounts.sign_in(user) do
-     {:error, _message} ->
-       {:error, :not_found}
-     {:ok, %User{} = user} ->
-       {:ok, token, _claims} = Guardian.encode_and_sign(user)
-       render(conn, "login.json", %{user: user, token: token})
-    end
-  end
-
-  def set_avatar(conn, %{"avatar" => avatar}) do
-    with current_resource <- TeamRecruit.Guardian.Plug.current_resource(conn) do
-      user = Accounts.get_user!(current_resource.id)
-
-      case Accounts.update_user(user, %{avatar: avatar}) do
-        {:ok, %User{} = _user} ->
-          json(conn, %{"success" => true})
-        {:error, _} ->
-          json(conn, %{"success" => false})
-      end
-    end
-  end
-
   def update(conn, %{"user" => user_params}) do
     user = Accounts.get_user!(user_params["id"])
 
@@ -66,5 +35,4 @@ defmodule TeamRecruitWeb.UserController do
       send_resp(conn, :no_content, "")
     end
   end
-
 end
