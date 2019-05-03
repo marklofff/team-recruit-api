@@ -4,9 +4,10 @@ defmodule TeamRecruit.TeamManager do
   """
 
   import Ecto.Query, warn: false
-  alias TeamRecruit.Repo
 
+  alias TeamRecruit.Repo
   alias TeamRecruit.TeamManager.{Team, Member}
+  alias TeamRecruit.Accounts.User
 
   @doc """
   Returns the list of teams.
@@ -17,10 +18,17 @@ defmodule TeamRecruit.TeamManager do
       [%Team{}, ...]
 
   """
-  def list_teams do
-    query = from u in Team,
-      preload: [:user, :members, :awards, :games]
-    Repo.all(query)
+  def list_teams(params \\ %{}) do
+    Team
+    |> order_by(desc: :inserted_at)
+    |> preload([members: :user])
+    |> Repo.all()
+  end
+
+  def paginate_teams(params \\ %{}) do
+    Team
+    |> preload([:user, :members, :games])
+    |> Repo.paginate(params)
   end
 
   @doc """
@@ -47,9 +55,12 @@ defmodule TeamRecruit.TeamManager do
   end
 
   def get_team_by_tag!(tag) do 
+    user_query = from u in User,
+      preload: [:games]
+
     query = from t in Team,
       where: t.tag == ^tag,
-      preload: [:user, :members, :awards, :games]
+      preload: [:user, [members: :user], :awards, :games]
 
     Repo.one!(query)
   end
@@ -91,17 +102,19 @@ defmodule TeamRecruit.TeamManager do
   def create_team(user_id, attrs \\ %{}) do
     game_ids = Enum.map(attrs["games"], fn(x) -> x["id"] end)
 
-    games = TeamRecruit.Games.Game
-            |> where([p], p.id in ^game_ids)
-            |> Repo.all
-    
+    games =
+      TeamRecruit.Games.Game
+      |> where([p], p.id in ^game_ids)
+      |> Repo.all
 
-    team = %Team{user_id: user_id}
-            |> Team.changeset(attrs)
-            |> Ecto.Changeset.put_assoc(:games, games) 
-            |> Repo.insert!()
+    team =
+      %Team{user_id: user_id}
+      |> Team.changeset(attrs)
+      |> Ecto.Changeset.put_assoc(:games, games) 
+      |> Repo.insert!()
 
-    query = from t in Team,
+    query =
+      from t in Team,
       where: t.id == ^team.id,
       preload: [:user, :members, :games, :awards]
 
@@ -109,31 +122,22 @@ defmodule TeamRecruit.TeamManager do
   end
 
   def add_member(team_id, user_id, attrs \\ %{}) do
-    {:ok, member} =
-      %Member{team_id: team_id, user_id: user_id}
-      |> Member.changeset(attrs)
-      |> Repo.insert()
-
-    query = from m in Member,
-      where: m.id == ^member.id,
-      preload: [:user, :team]
-
-    {:ok, Repo.one(query)}
+    %Member{team_id: team_id, user_id: user_id}
+    |> Member.changeset(attrs)
+    |> Repo.insert()
   end
 
-  def add_game(user, team_id, game_id, _attrs \\ %{}) do
+  def add_game(team_id, game_id, _attrs \\ %{}) do
     team =
       get_team!(team_id)
       |> Repo.preload([:user, :games])
 
     game = TeamRecruit.Games.get_game!(game_id)
 
-    if is_team_leader?(user, team) do
-      team
-      |> Team.changeset(%{})
-      |> Ecto.Changeset.put_assoc(:games, [game | team.games]) 
-      |> Repo.update!()
-    end
+    team
+    |> Team.changeset(%{})
+    |> Ecto.Changeset.put_assoc(:games, [game | team.games]) 
+    |> Repo.update!()
 
     {:ok, team}
   end

@@ -11,7 +11,7 @@ defmodule TeamRecruit.Application do
       # Start the Ecto repository
       TeamRecruit.Repo,
       # Start the endpoint when the application starts
-      TeamRecruitWeb.Endpoint
+      TeamRecruitWeb.Endpoint,
       # Starts a worker by calling: TeamRecruit.Worker.start_link(arg)
       # {TeamRecruit.Worker, arg},
     ]

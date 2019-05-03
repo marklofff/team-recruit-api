@@ -3,23 +3,41 @@ defmodule TeamRecruit.Factory do
   Factories
   """
   use ExMachina.Ecto, repo: TeamRecruit.Repo
+  alias TeamRecruit.Accounts.User
 
   def user_factory do
     %TeamRecruit.Accounts.User{
-      name: sequence(:name, &"Test テスト User #{&1}"),
-      userId: sequence(:userId, &"user#{&1}"),
-      email: sequence(:email, &"user#{&1}@test.com"),
-      password: "password",
-      password_confirmation: "password",
-      bio: sequence(:bio, &"Tester Number #{&1}"),
+      nickname: sequence(:name, &"#{Faker.Name.name()} #{&1}"),
+      bio: Faker.Lorem.paragraph(),
     }
+  end
+
+  def social_account_factory do
+    %TeamRecruit.Accounts.SocialAccounts{
+      email: Faker.Internet.email(),
+      name: Faker.Name.name(),
+      avatar: Faker.Avatar.image_url(),
+      uid: Faker.UUID.v4(),
+      user: build(:user)
+    }
+  end
+
+  def user_game_factory do
+    user = insert(:user)
+    game = insert(:game)
+
+    user
+    |> TeamRecruit.Repo.preload(:games)
+    |> User.changeset(%{})
+    |> Ecto.Changeset.put_assoc(:games, [game])
+    |> TeamRecruit.Repo.update!
   end
 
   def game_factory do
     %TeamRecruit.Games.Game{
       short_name: "csgo",
       full_name: "csgo",
-      app_id: "1234"
+      app_id: "1234",
     }
   end
 

@@ -9,7 +9,6 @@ defmodule TeamRecruit.Repo.Migrations.CreateMembers do
       timestamps()
     end
 
-    create index(:members, [:user_id])
-    create index(:members, [:team_id])
+    create unique_index(:members, [:user_id, :team_id])
   end
 end

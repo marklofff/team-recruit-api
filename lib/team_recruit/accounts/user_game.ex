@@ -6,6 +6,8 @@ defmodule TeamRecruit.TeamManager.UserGame do
   import Ecto.Changeset
 
   schema "user_games" do
+    belongs_to :user, TeamRecruit.Accounts.User
+    belongs_to :game, TeamRecruit.Games.Game
   end
 
   @doc false

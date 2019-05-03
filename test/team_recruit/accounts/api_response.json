@@ -1,0 +1,26 @@
+{ "provider": "steam",
+  "_json":
+  { "steamid": "76561198119197701",
+    "communityvisibilitystate": 3,
+    "profilestate": 1,
+    "personaname": "Xyz",
+    "lastlogoff": 1550124998,
+    "commentpermission": 2,
+    "profileurl": "https://steamcommunity.com/profiles/76561198119197701/",
+    "avatar": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/17/1718ce1abb48f406ab56648883dd799df9329140.jpg",
+    "avatarmedium": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/17/1718ce1abb48f406ab56648883dd799df9329140_medium.jpg",
+    "avatarfull": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/17/1718ce1abb48f406ab56648883dd799df9329140_full.jpg",
+    "personastate": 0,
+    "realname": "Xyz",
+    "primaryclanid": "103582791460722890",
+    "timecreated": 1387805961,
+    "personastateflags": 0,
+    "loccountrycode": "BR" },
+    "id": "76561198119197701",
+    "displayName": "Xyz",
+    "photos": [
+      { "value": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/17/1718ce1abb48f406ab56648883dd799df9329140.jpg"},
+      { "value": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/17/1718ce1abb48f406ab56648883dd799df9329140_medium.jpg" },
+      { "value": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/17/1718ce1abb48f406ab56648883dd799df9329140_full.jpg"}
+    ]
+}

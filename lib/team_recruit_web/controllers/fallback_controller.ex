@@ -19,4 +19,10 @@ defmodule TeamRecruitWeb.FallbackController do
     |> put_view(TeamRecruitWeb.ErrorView)
     |> render(:"404")
   end
+
+  def call(conn, {:error, msg}) when is_binary(msg) do
+    conn
+    |> put_status(:not_found)
+    |> json(%{error: msg})
+  end
 end

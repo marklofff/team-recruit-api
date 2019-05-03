@@ -17,5 +17,6 @@ defmodule TeamRecruit.TeamManager.Member do
     member
     |> cast(attrs, [])
     |> validate_required([])
+    |> unique_constraint(:user_id, name: :members_user_id_team_id_index) # check if the user already exists
   end
 end

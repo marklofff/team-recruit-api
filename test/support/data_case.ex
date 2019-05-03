@@ -16,6 +16,7 @@ defmodule TeamRecruit.DataCase do
 
   using do
     quote do
+      use ExSpec
       alias TeamRecruit.Repo
 
       import Ecto

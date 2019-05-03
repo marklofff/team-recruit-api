@@ -20,12 +20,8 @@ defmodule TeamRecruit.MixProject do
   def application do
     [
       mod: {TeamRecruit.Application, []},
-      extra_applications: [:logger, :runtime_tools, :arc_ecto, :edeliver,
-        :ueberauth_steam,
-        :ueberauth_google,
-        :ueberauth_discord,
-        :ueberauth_twitter,
-        :ueberauth_identity
+      extra_applications: [:logger, :runtime_tools, :arc_ecto,
+        :edeliver, :httpoison
       ]
     ]
   end
@@ -50,14 +46,16 @@ defmodule TeamRecruit.MixProject do
 
       # auth
       {:guardian, "~> 1.0"},
-      {:ueberauth, "~> 0.6"},
-      {:ueberauth_discord, github: "qwexvf/ueberauth_discord"},
-      {:ueberauth_google, "~> 0.8"},
-      {:ueberauth_steam, github: "qwexvf/ueberauth_steam"},
-      {:ueberauth_twitter, "~> 0.2"},
-      {:ueberauth_identity, "~> 0.2"},
-      {:steam_ex, "~> 0.2.0-alpha"},
-      {:oauth, github: "tim/erlang-oauth"},
+      {:guardian_db, "~> 2.0"},
+      #{:ueberauth, "~> 0.6"},
+      #{:ueberauth_discord, github: "qwexvf/ueberauth_discord"},
+      #{:ueberauth_google, "~> 0.8"},
+      #{:ueberauth_steam, github: "qwexvf/ueberauth_steam"},
+      #{:ueberauth_twitter, path: "./ueberauth_twitter"},
+      #{:ueberauth_identity, "~> 0.2"},
+      
+      #{:steam_ex, "~> 0.2.0-alpha"},
+      #{:oauth, github: "tim/erlang-oauth"},
       {:argon2_elixir, "~> 2.0"},
 
       # Cors
@@ -66,6 +64,7 @@ defmodule TeamRecruit.MixProject do
       # utils
       {:elixir_uuid, "~> 1.2"},
       {:arc, "~> 0.11.0"},
+      {:httpoison, "~> 1.4"},
 
       # deploy
       {:edeliver, ">= 1.6.0"},
@@ -73,13 +72,16 @@ defmodule TeamRecruit.MixProject do
 
       # ecto
       {:ecto_enum, "~> 1.2"},
-      {:arc_ecto, "~> 0.11.1"},
+      {:arc_ecto, github: "qwexvf/arc_ecto"},
+      {:scrivener_ecto, "~> 2.0"},
 
       # dev and tests
       {:ex_machina, "~> 2.3", only: :test},
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},
       {:mix_test_watch, "~> 0.8", only: :dev, runtime: false},
       {:scribe, "~> 0.8", only: [:dev, :test]},
+      {:ex_spec, "~> 2.0", only: :test},
+      {:faker, "~> 0.12", only: :test}
     ]
   end
 

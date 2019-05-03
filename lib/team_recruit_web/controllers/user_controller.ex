@@ -6,45 +6,18 @@ defmodule TeamRecruitWeb.UserController do
 
   action_fallback TeamRecruitWeb.FallbackController
 
+  def me(%{assigns: %{user: %User{} = user}} = conn, _params) do
+    render(conn, "authenticated_user.json", %{user: user})
+  end
+
   def index(conn, _params) do
     users = Accounts.list_users()
     render(conn, "index.json", users: users)
   end
 
-  def show(conn, %{"userId" => userId}) do
-    user = Accounts.get_user_by_userId!(userId)
+  def show(conn, %{"uuid" => uuid}) do
+    user = Accounts.get_user_by_uuid!(uuid)
     render(conn, "user.json", user: user)
-  end
-
-  def register(conn, %{"user" => user_params}) do
-    with {:ok, %User{} = user} <- Accounts.create_user(user_params),
-         {:ok, _token, _claims} <- Guardian.encode_and_sign(user) do
-      conn
-      |> render("show.json", user: user)
-    end
-  end
-
-  def login(conn, %{"user" => user}) do
-   case Accounts.sign_in(user) do
-     {:error, message} ->
-       {:error, :not_found}
-     {:ok, %User{} = user} ->
-       {:ok, token, _claims} = Guardian.encode_and_sign(user)
-       render(conn, "login.json", %{user: user, token: token})
-    end
-  end
-
-  def set_avatar(conn, %{"avatar" => avatar}) do
-    with current_resource <- TeamRecruit.Guardian.Plug.current_resource(conn) do
-      user = Accounts.get_user!(current_resource.id)
-
-      case Accounts.update_user(user, %{avatar: avatar}) do
-        {:ok, %User{} = user} ->
-          json(conn, %{"success" => true})
-        {:error, _} ->
-          json(conn, %{"success" => false})
-      end
-    end
   end
 
   def update(conn, %{"user" => user_params}) do
@@ -61,9 +34,5 @@ defmodule TeamRecruitWeb.UserController do
     with {:ok, %User{}} <- Accounts.delete_user(user) do
       send_resp(conn, :no_content, "")
     end
-  end
-
-  def me(%{assigns: %{user: user}} = conn, _params) do
-    render(conn, "user.json", %{user: user})
   end
 end

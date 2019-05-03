@@ -4,15 +4,34 @@ defmodule TeamRecruit.Accounts do
   """
 
   import Ecto.Query, warn: false
-  alias Ueberauth.Auth
   alias TeamRecruit.Repo
-  alias TeamRecruit.Accounts.User
-  alias TeamRecruit.Accounts.SocialAccounts
+  alias TeamRecruit.Accounts.{User, SocialAccounts}
 
+  @doc """
+  Returns the list of users.
+
+  ## Examples
+
+      iex> list_users()
+      [%User{}, ...]
+
+  """
   def list_users do
     Repo.all(User)
   end
 
+  @doc """
+  Gets a single user.
+
+  ## Examples
+
+      iex> get_user!(123)
+      %User{...}
+
+      iex> get_user!(456)
+      ** (Ecto.NoResultsError)
+
+  """
   def get_user!(id) do
     query =
       from u in User,
@@ -22,6 +41,18 @@ defmodule TeamRecruit.Accounts do
     Repo.one!(query)
   end
 
+  @doc """
+  Creates a user.
+
+  ## Examples
+
+      iex> create_user(%{field: value})
+      {:ok, %User{}}
+
+      iex> create_user(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
   def create_user(attrs \\ %{}) do
     {:ok, user} =
       %User{}
@@ -32,14 +63,31 @@ defmodule TeamRecruit.Accounts do
     {:ok, user}
   end
 
-  def update_user(%User{} = user, attrs) do
-    {:ok, result} =
-      user
-      |> User.changeset(attrs)
-      |> Repo.update()
 
-    {:ok, Repo.preload(result, [{:teams, [:user, :games, :awards]}, :games])}
+  @doc """
+  Creates a new social account for a user.
+
+  ## Examples
+
+      iex> add_social_account(user, %{...fields})
+      {:ok, %SocialAccounts{}}
+
+      iex> add_social_account(user, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def add_social_account(%User{} = user, social_account) do
+    %SocialAccounts{
+      email: social_account.email,
+      name: social_account.name,
+      avatar: social_account.avatar,
+      provider: social_account.provider,
+      uid: social_account.uid,
+      user_id: user.id
+    }
+    |> Repo.insert!()
   end
+
   def update_user(%User{} = user, attrs) do
     {:ok, result} =
       user
@@ -57,10 +105,63 @@ defmodule TeamRecruit.Accounts do
     User.changeset(user, %{})
   end
 
-  def sign_in(user_params) do
-    with {:ok, user} <- get_by_email(user_params["email"]) do
-      verify_pass(user, user_params["password"])
+
+  defp fetch_user(provider, uid) do
+    User
+    |> join(:left, [u], s in assoc(u, :social_accounts), on: s.uid == ^uid)
+    |> where([u, s], s.provider == ^provider)
+    |> Repo.one()
+  end
+
+  @doc """
+    Creates a user within a social account connected.
+  """
+  def find_or_create(%{provider: provider, uid: uid} = profile) do
+    case get_user_by_profile(provider, uid) do
+      %User{} = user ->
+        {:ok, Repo.preload(user, [:social_accounts, :teams])}
+      nil ->
+        nickname =
+          profile.name
+          |> String.split
+          |> Enum.at(-1)
+
+        create_user(%{
+          avatar: profile.avatar,
+          provider: profile.provider, # register with this provider
+          nickname: nickname,
+          social_accounts: [profile]
+        })
     end
+  end
+
+  @doc """
+  Connect an social account to a existing user
+  """
+  def find_or_create(%User{} = current_user,
+    %{provider: provider, uid: uid} = profile)
+  do
+    case get_user_by_profile(provider, uid) do # if user does not have this provider
+      %User{} = user ->
+        {:ok, Repo.preload(user, [:social_accounts])}
+      nil ->
+        add_social_account(current_user, profile)
+        {:ok, current_user}
+    end
+  end
+
+  def get_user_by_profile(provider, uid) do
+    User
+    |> join(:left, [u], s in assoc(u, :social_accounts),
+      on: s.uid == ^uid)
+    |> where([u, s], s.provider == ^provider)
+    |> Repo.one()
+  end
+
+  def get_user_by_uuid!(uuid) do
+    User
+    |> where([u], u.uuid == ^uuid)
+    |> Repo.one()
   end
 
   defp get_by_email(email) when is_binary(email) do
@@ -76,58 +177,10 @@ defmodule TeamRecruit.Accounts do
     end
   end
 
-  def find_or_create(%Auth{provider: provider, info: info, uid: uid} = auth) do
-    params = %{"provider" => provider, "uid" => uid}
-    # find any user that is connected to this thirdpaty account
-
-    with %User{} = user <- get_user_by_provider(params) do
-      {:ok, Repo.preload(user, [:social_accounts, :teams])}
-    else
-      nil ->
-        auth
-        |> TeamRecruit.Representer.to_map()
-        |> create_account(provider)
-      user ->
-        user
+  def sign_in(user_params) do
+    with {:ok, user} <- get_by_email(user_params["email"]) do
+      verify_pass(user, user_params["password"])
     end
-  end
-
-  def find_or_create(%User{} = current_user, %Auth{provider: provider, info: info, uid: uid} = auth) do
-    user_object = TeamRecruit.Representer.to_map(auth)
-    provider_list = ProviderEnum.__enum_map__()
-
-    provider_exists? =
-      User
-      |> join(:left, [u], s in assoc(u, :social_accounts), on: s.uid == ^to_string(uid))
-      |> where([u, s], s.provider == ^provider_list[provider])
-      |> Repo.one()
-
-    user =
-      case provider_exists? do # if user does not have this provider
-        nil ->
-          user_object = Map.put(user_object, :provider, provider)
-
-          current_user
-          |> update_user(%{social_accounts: [user_object | current_user.social_accounts]})
-        user ->
-          user
-      end
-
-    {:ok, Repo.preload(user, [:social_accounts])}
-  end
-
-  def get_user_by_provider(%{"provider" => provider, "uid" => uid}) do
-    provider_list = ProviderEnum.__enum_map__()
-
-    User
-    |> join(:left, [u], s in assoc(u, :social_accounts), on: s.uid == ^to_string(uid))
-    |> where([u, s], s.provider == ^provider_list[provider])
-    |> Repo.one()
-  end
-
-  def create_account(user_object, provider) do
-    user_object = Map.put(user_object, :provider, provider)
-    create_user(%{social_accounts: [user_object]})
   end
 
   defp verify_pass(nil, _), do: {:error, "Incorrect email or password."}

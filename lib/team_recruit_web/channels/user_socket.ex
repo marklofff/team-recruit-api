@@ -3,6 +3,7 @@ defmodule TeamRecruitWeb.UserSocket do
 
   ## Channels
   # channel "room:*", TeamRecruitWeb.RoomChannel
+  channel "notification:*", TeamRecruitWeb.NotificationChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After

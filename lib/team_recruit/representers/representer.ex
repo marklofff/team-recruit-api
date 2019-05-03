@@ -1,25 +1,23 @@
 defmodule TeamRecruit.Representer do
-  alias Ueberauth.Auth
-  alias TeamRecruit.Representer.{SteamRepresenter, GoogleRepresenter, TwitterRresenter}
-  alias TeamRecruit.Representer.{SteamStruct, GoogleStruct, TwitterStruct}
+  alias TeamRecruit.Representer.{SteamRepresenter, GoogleRepresenter, TwitterRepresenter, DiscordRepresenter}
+  alias TeamRecruit.Representer.{SteamStruct, GoogleStruct, TwitterStruct, DiscordStruct}
 
-  def to_map(%Auth{provider: provider,
-    credentials: _,
-    info: info,
-    uid: _uid,
-    extra: %Ueberauth.Auth.Extra{raw_info: %{user: user}}
-  }) do
-
-    _to_map(%{"provider" => provider, "info" => info, "user" => user})
+  def to_map(params) do
+    params["provider"]
+    |> String.to_atom()
+    |> to_map(params)
   end
 
-  def _to_map(%{"provider" => :steam, "info" => info, "user" => user}) do
-    SteamRepresenter.to_map(user, as: %SteamStruct{})
+  def to_map(:steam, profile) do
+    SteamRepresenter.to_map(profile, as: %SteamStruct{})
   end
-  def _to_map(%{"provider" => :google, "info" => info, "user" => user}) do
-    GoogleRepresenter.to_map(user, as: %GoogleStruct{})
+  def to_map(:google, profile) do
+    GoogleRepresenter.to_map(profile, as: %GoogleStruct{})
   end
-  def _to_map(%{"provider" => :twitter, "info" => info, "user" => user}) do
-    TwitterRresenter.to_map(user, as: %TwitterStruct{})
+  def to_map(:twitter, profile) do
+    TwitterRepresenter.to_map(profile, as: %TwitterStruct{})
+  end
+  def to_map(:discord, profile) do
+    DiscordRepresenter.to_map(profile, as: %DiscordStruct{})
   end
 end

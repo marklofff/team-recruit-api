@@ -1,4 +1,7 @@
 defmodule TeamRecruit.Guardian.AuthErrorHandler do
+  @moduledoc """
+    Guardian ErrorHandler
+  """
   import Plug.Conn
 
   @behaviour Guardian.Plug.ErrorHandler
