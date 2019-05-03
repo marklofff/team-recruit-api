@@ -12,6 +12,9 @@ defmodule TeamRecruit.Accounts.User do
     field :uuid, :string
     field :bio, :string
     field :provider, ProviderEnum
+    field :email, :string
+    field :encrypted_password, :string
+    field :password, :string, virtual: true
 
     # has_one :identity_account, TeamRecruit.Accounts.SteamAccount
     has_many :social_accounts, TeamRecruit.Accounts.SocialAccounts
@@ -30,5 +33,19 @@ defmodule TeamRecruit.Accounts.User do
     |> validate_required([])
     |> TeamRecruit.Utils.check_uuid
     |> cast_attachments(attrs, [:avatar], allow_urls: true)
+  end
+
+  @doc """
+    Put Email/Password
+  """
+  def update_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:email, :password])
+    |> validate_required([:email, :password])
+    |> put_change(:encrypted_password, encrypted_password(attrs.password))
+  end
+
+  defp encrypted_password(password) do
+    Argon2.hash_pwd_salt(password)
   end
 end
