@@ -7,10 +7,8 @@ defmodule Api.Avatar do
   use Arc.Definition
   use Arc.Ecto.Definition
 
-
   # To add a thumbnail version:
   @versions [:original, :thumb]
-
 
   # Override the bucket on a per definition basis:
   # def bucket do

@@ -7,7 +7,7 @@ defmodule Api.Application do
 
   def start(_type, _args) do
     children = [
-      Api.Repo,
+      Api.Repo
     ]
 
     opts = [strategy: :one_for_one, name: Api.Supervisor]

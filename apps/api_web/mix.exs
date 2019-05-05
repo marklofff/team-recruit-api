@@ -44,8 +44,7 @@ defmodule ApiWeb.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:cors_plug, "~> 2.0"},
-
-      {:api, in_umbrella: true},
+      {:api, in_umbrella: true}
     ]
   end
 

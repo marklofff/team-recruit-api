@@ -7,7 +7,9 @@ defmodule ApiWeb.Plugs.FetchAvailableUserPlug do
     case ApiWeb.Guardian.Plug.current_resource(conn) do
       nil ->
         conn
-      user -> assign(conn, :user, user)
+
+      user ->
+        assign(conn, :user, user)
     end
   end
 end

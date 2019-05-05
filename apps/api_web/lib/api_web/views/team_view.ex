@@ -11,7 +11,7 @@ defmodule ApiWeb.TeamView do
         total_pages: teams.total_pages,
         total_entries: teams.total_entries
       },
-      data: render_many(teams.entries, __MODULE__, "minimal_team.json"),
+      data: render_many(teams.entries, __MODULE__, "minimal_team.json")
     }
   end
 
@@ -20,19 +20,23 @@ defmodule ApiWeb.TeamView do
   end
 
   def render("minimal_team.json", %{team: team}) do
-    IO.inspect team
-    %{id: team.id,
+    IO.inspect(team)
+
+    %{
+      id: team.id,
       name: team.name,
       tag: team.tag,
       bio: team.bio,
       avatar: TeamAvatar.url({team.avatar, team}, :thumb),
-      leader: render_one(team.user, ApiWeb.UserView, "user.json"),
+      leader: render_one(team.user, ApiWeb.UserView, "user.json")
     }
   end
 
   def render("team.json", %{team: team}) do
-    IO.inspect team
-    %{id: team.id,
+    IO.inspect(team)
+
+    %{
+      id: team.id,
       name: team.name,
       tag: team.tag,
       bio: team.bio,
@@ -46,17 +50,18 @@ defmodule ApiWeb.TeamView do
       leader: render_one(team.user, ApiWeb.UserView, "user.json"),
       games: render_many(team.games, ApiWeb.GameView, "game.json"),
       members: Enum.count(team.members),
-      awards: render_many(team.awards, ApiWeb.AwardsView, "award.json"),
+      awards: render_many(team.awards, ApiWeb.AwardsView, "award.json")
     }
   end
 
   def render("member_user.json", %{members: members}) do
-    %{id: members.user.id,
+    %{
+      id: members.user.id,
       nickname: members.user.nickname,
       bio: members.user.bio,
       avatar: Avatar.url({members.user.avatar, members.user}, :original),
       uuid: members.user.uuid,
-      games: render_many(members.user.games, ApiWeb.GameView, "game.json"),
+      games: render_many(members.user.games, ApiWeb.GameView, "game.json")
     }
   end
 end

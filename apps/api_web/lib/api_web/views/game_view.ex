@@ -11,7 +11,7 @@ defmodule ApiWeb.GameView do
       app_id: game.app_id,
       id: game.id,
       provider: game.provider,
-      short_name: game.short_name,
+      short_name: game.short_name
     }
   end
 end

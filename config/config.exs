@@ -24,9 +24,9 @@ config :api_web, ApiWeb.Endpoint,
   render_errors: [view: ApiWeb.ErrorView, accepts: ~w(json)],
   pubsub: [name: ApiWeb.PubSub, adapter: Phoenix.PubSub.PG2]
 
-
 config :arc,
-  storage: Arc.Storage.Local # or Arc.Storage.Local
+  # or Arc.Storage.Local
+  storage: Arc.Storage.Local
 
 config :api_web, ApiWeb.Guardian,
   issuer: "team_recruit",

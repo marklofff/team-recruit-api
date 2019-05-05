@@ -2,7 +2,8 @@ defmodule Api.Repo.Migrations.CreateSteamAccount do
   use Ecto.Migration
 
   def change do
-    ProviderEnum.create_type
+    ProviderEnum.create_type()
+
     create table(:social_accounts) do
       add :email, :string
       add :avatar, :string

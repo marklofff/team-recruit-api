@@ -22,11 +22,12 @@ defmodule ApiWeb.ProfileController do
         case Profile.get_owned_game_by_game_id(user.id, game_id) do
           nil ->
             Profile.add_owned_game(user.id, game_id)
+
           %OwnedGames{} = game ->
             game
         end
 
-        json(conn, %{success: true})
+      json(conn, %{success: true})
     end
   end
 

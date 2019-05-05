@@ -45,7 +45,18 @@ defmodule Api.TeamAvatar do
   #   "uploads/user/avatars/#{scope.id}"
   # end
   def storage_dir(version, {file, scope}) do
-    "uploads/team/avatars/#{scope.uuid}"
+    if Map.has_key?(file, :path) do
+      case String.contains?(file.path, "candidate_pics") do
+        true ->
+          IO.puts("dev image")
+          Path.expand("/opt/app/uploads") <> "/team/avatars/#{scope.uuid}"
+
+        false ->
+          "uploads/team/avatars/#{scope.uuid}"
+      end
+    else
+      "uploads/team/avatars/#{scope.uuid}"
+    end
   end
 
   # Provide a default URL if there hasn't been a file uploaded

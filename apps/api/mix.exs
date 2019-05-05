@@ -52,7 +52,7 @@ defmodule Api.MixProject do
       {:httpoison, "~> 1.4"},
       {:ecto_enum, "~> 1.2"},
       {:arc_ecto, github: "qwexvf/arc_ecto"},
-      {:scrivener_ecto, "~> 2.0"},
+      {:scrivener_ecto, "~> 2.0"}
     ]
   end
 

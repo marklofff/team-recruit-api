@@ -10,7 +10,8 @@ defmodule ApiWeb.InvitationView do
   end
 
   def render("invitation.json", %{invitation: invitation}) do
-    %{id: invitation.id,
+    %{
+      id: invitation.id,
       team: %{
         id: invitation.team.id,
         name: invitation.team.name,
@@ -20,6 +21,7 @@ defmodule ApiWeb.InvitationView do
           avatar: invitation.team.user.avatar
         }
       },
-      accepted: invitation.accepted}
+      accepted: invitation.accepted
+    }
   end
 end

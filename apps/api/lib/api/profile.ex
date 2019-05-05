@@ -7,16 +7,19 @@ defmodule Api.Profile do
   alias Api.Profile.OwnedGames
 
   def list_owned_games(user_id) do
-    query = from g in OwnedGames,
-      where: g.user_id == ^user_id,
-      preload: [:user, :game]
+    query =
+      from g in OwnedGames,
+        where: g.user_id == ^user_id,
+        preload: [:user, :game]
 
     Repo.all(query)
   end
 
   def get_owned_game_by_game_id(user_id, game_id) do
-    query = from g in OwnedGames,
-      where: g.user_id == ^user_id and g.game_id == ^game_id
+    query =
+      from g in OwnedGames,
+        where: g.user_id == ^user_id and g.game_id == ^game_id
+
     Repo.one(query)
   end
 

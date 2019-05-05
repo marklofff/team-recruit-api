@@ -14,12 +14,14 @@ defmodule ApiWeb.InvitationController do
 
   def create(%{assigns: %{user: user}} = conn, params) do
     params = Map.put(params, "user", user)
+
     with {:ok, %Invitation{} = invitation} <- Notifications.create_invitation(params) do
       ApiWeb.Endpoint.broadcast!(
         "notification:" <> to_string(invitation.user_id),
         "invitatio:new",
         Notifications.create_payload(invitation)
       )
+
       conn
       |> put_status(:created)
       |> render("show.json", invitation: invitation)
@@ -28,12 +30,12 @@ defmodule ApiWeb.InvitationController do
 
   def accept_invitation(%{assigns: %{user: user}} = conn, params) do
     invitation = Notifications.get_invitation!(params["id"])
-    IO.inspect invitation
+    IO.inspect(invitation)
 
     with true <- Notifications.check_user(invitation, user),
-         {:ok, %Invitation{} = invitation} <- Notifications.update_invitation(invitation, %{accepted: true}),
-         {:ok, _member} <- TeamManager.add_member(invitation.team_id, invitation.user_id)
-    do
+         {:ok, %Invitation{} = invitation} <-
+           Notifications.update_invitation(invitation, %{accepted: true}),
+         {:ok, _member} <- TeamManager.add_member(invitation.team_id, invitation.user_id) do
       conn
       |> render("show.json", invitation: invitation)
     end

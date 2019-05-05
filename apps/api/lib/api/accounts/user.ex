@@ -31,7 +31,7 @@ defmodule Api.Accounts.User do
     |> cast(attrs, [:uuid, :nickname, :provider])
     |> cast_assoc(:social_accounts)
     |> validate_required([])
-    |> Api.Utils.check_uuid
+    |> Api.Utils.check_uuid()
     |> cast_attachments(attrs, [:avatar], allow_urls: true)
   end
 

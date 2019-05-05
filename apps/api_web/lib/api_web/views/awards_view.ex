@@ -10,9 +10,6 @@ defmodule ApiWeb.AwardView do
   end
 
   def render("team.json", %{award: award}) do
-    %{id: award.id,
-      title: award.title,
-      rank: award.rank,
-      date: award.date}
+    %{id: award.id, title: award.title, rank: award.rank, date: award.date}
   end
 end

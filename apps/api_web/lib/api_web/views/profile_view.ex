@@ -11,16 +11,17 @@ defmodule ApiWeb.ProfileView do
       app_id: game.app_id,
       id: game.id,
       provider: game.provider,
-      short_name: game.short_name,
+      short_name: game.short_name
     }
   end
+
   def render("game.json", %{game: game}) do
     %{
       full_name: game.full_name,
       app_id: game.app_id,
       id: game.id,
       provider: game.provider,
-      short_name: game.short_name,
+      short_name: game.short_name
     }
   end
 end

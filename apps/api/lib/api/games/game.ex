@@ -23,7 +23,7 @@ defmodule Api.Games.Game do
     game
     |> cast(attrs, [:full_name, :short_name, :app_id, :provider])
     |> validate_required([:full_name, :short_name, :app_id, :provider])
-    |> Utils.check_uuid
+    |> Utils.check_uuid()
     |> cast_attachments(attrs, [:avatar])
   end
 end

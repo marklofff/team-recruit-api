@@ -19,7 +19,7 @@ defmodule Api.TeamManager.Team do
     # avatar
     field :avatar, Api.TeamAvatar.Type
     field :uuid, :string
-    
+
     # leader
     belongs_to :user, Api.Accounts.User
 
@@ -39,7 +39,7 @@ defmodule Api.TeamManager.Team do
     |> cast(attrs, [:name, :tag, :bio, :wanted_num, :views, :wanted, :nation, :language])
     |> validate_required([:name, :tag])
     |> unique_constraint(:tag)
-    |> Api.Utils.check_uuid
+    |> Api.Utils.check_uuid()
     |> cast_attachments(attrs, [:avatar], allow_paths: true)
   end
 end

@@ -11,7 +11,8 @@ defmodule ApiWeb.Router do
   end
 
   pipeline :fetch_available_user do
-    plug Guardian.Plug.Pipeline, module: Api.Guardian,
+    plug Guardian.Plug.Pipeline,
+      module: Api.Guardian,
       error_handler: Api.Guardian.AuthErrorHandler
 
     plug Guardian.Plug.VerifyHeader, realm: "Bearer"
@@ -29,11 +30,11 @@ defmodule ApiWeb.Router do
     get "/me/notifications", InvitationController, :index
 
     # teams
-    post   "/teams", TeamController, :create
-    patch  "/teams/:id", TeamController, :update
-    put    "/teams/:id", TeamController, :update
+    post "/teams", TeamController, :create
+    patch "/teams/:id", TeamController, :update
+    put "/teams/:id", TeamController, :update
     delete "/teams/:id", TeamController, :delete
-    post   "/teams/add_game", TeamController, :add_new_game
+    post "/teams/add_game", TeamController, :add_new_game
     # end of teams
 
     # create new invitation

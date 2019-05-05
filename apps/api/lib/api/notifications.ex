@@ -18,10 +18,10 @@ defmodule Api.Notifications do
 
   """
   def list_invitation(user_id) do
-    query = 
+    query =
       from i in Invitation,
-      where: i.user_id == ^user_id,
-      preload: [[team: :user], :user]
+        where: i.user_id == ^user_id,
+        preload: [[team: :user], :user]
 
     Repo.all(query)
   end
@@ -30,7 +30,7 @@ defmodule Api.Notifications do
     %{
       type: "invitation:new",
       from: %{
-        team: %{name: invitation.team.name, user: invitation.team.user.name},
+        team: %{name: invitation.team.name, user: invitation.team.user.name}
       }
     }
   end
@@ -57,7 +57,7 @@ defmodule Api.Notifications do
 
   def check_user(%Invitation{} = invitation, %Api.Accounts.User{} = user) do
     if invitation.user_id == user.id do
-      IO.puts "is user"
+      IO.puts("is user")
       true
     else
       {:error, "No permission."}
@@ -78,7 +78,7 @@ defmodule Api.Notifications do
   """
   def create_invitation(%{"user" => user} = attrs \\ %{}) do
     team = Api.TeamManager.get_team!(attrs["team_id"])
-    IO.inspect user.id
+    IO.inspect(user.id)
 
     if user.id == team.user_id do
       %Invitation{team_id: attrs["team_id"], user_id: attrs["user_id"]}

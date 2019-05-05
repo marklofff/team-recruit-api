@@ -21,7 +21,8 @@ defmodule ApiWeb.UserView do
   end
 
   def render("user.json", %{user: user}) do
-    %{id: user.id,
+    %{
+      id: user.id,
       nickname: user.nickname,
       bio: user.bio,
       avatar: Avatar.url({user.avatar, user}, :original),
@@ -30,12 +31,14 @@ defmodule ApiWeb.UserView do
   end
 
   def render("authenticated_user.json", %{user: user}) do
-    %{id: user.id,
+    %{
+      id: user.id,
       nickname: user.nickname,
       bio: user.bio,
       avatar: Avatar.url({user.avatar, user}, :original),
       uuid: user.uuid,
-      social_accounts: render_many(user.social_accounts, __MODULE__, "social_accounts.json", as: :social_accounts)
+      social_accounts:
+        render_many(user.social_accounts, __MODULE__, "social_accounts.json", as: :social_accounts)
     }
   end
 end

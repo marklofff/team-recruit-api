@@ -21,7 +21,7 @@ defmodule Api.TeamManager do
   def list_teams(params \\ %{}) do
     Team
     |> order_by(desc: :inserted_at)
-    |> preload([members: :user])
+    |> preload(members: :user)
     |> Repo.all()
   end
 
@@ -45,22 +45,24 @@ defmodule Api.TeamManager do
       ** (Ecto.NoResultsError)
 
   """
-  def get_team!(id) do 
+  def get_team!(id) do
     query =
       from t in Team,
-      where: t.id == ^id,
-      preload: [:user, :members, :awards, :games]
+        where: t.id == ^id,
+        preload: [:user, :members, :awards, :games]
 
     Repo.one!(query)
   end
 
-  def get_team_by_tag!(tag) do 
-    user_query = from u in User,
-      preload: [:games]
+  def get_team_by_tag!(tag) do
+    user_query =
+      from u in User,
+        preload: [:games]
 
-    query = from t in Team,
-      where: t.tag == ^tag,
-      preload: [:user, [members: :user], :awards, :games]
+    query =
+      from t in Team,
+        where: t.tag == ^tag,
+        preload: [:user, [members: :user], :awards, :games]
 
     Repo.one!(query)
   end
@@ -79,10 +81,11 @@ defmodule Api.TeamManager do
       ** (Ecto.NoResultsError)
 
   """
-  def get_my_teams(user_id) do 
-    query = from t in Team,
-      where: t.user_id == ^user_id,
-      preload: [:user, :members, :awards, :games]
+  def get_my_teams(user_id) do
+    query =
+      from t in Team,
+        where: t.user_id == ^user_id,
+        preload: [:user, :members, :awards, :games]
 
     Repo.all(query)
   end
@@ -100,23 +103,23 @@ defmodule Api.TeamManager do
 
   """
   def create_team(user_id, attrs \\ %{}) do
-    game_ids = Enum.map(attrs["games"], fn(x) -> x["id"] end)
+    game_ids = Enum.map(attrs["games"], fn x -> x["id"] end)
 
     games =
       Api.Games.Game
       |> where([p], p.id in ^game_ids)
-      |> Repo.all
+      |> Repo.all()
 
     team =
       %Team{user_id: user_id}
       |> Team.changeset(attrs)
-      |> Ecto.Changeset.put_assoc(:games, games) 
+      |> Ecto.Changeset.put_assoc(:games, games)
       |> Repo.insert!()
 
     query =
       from t in Team,
-      where: t.id == ^team.id,
-      preload: [:user, :members, :games, :awards]
+        where: t.id == ^team.id,
+        preload: [:user, :members, :games, :awards]
 
     {:ok, Repo.one(query)}
   end
@@ -136,7 +139,7 @@ defmodule Api.TeamManager do
 
     team
     |> Team.changeset(%{})
-    |> Ecto.Changeset.put_assoc(:games, [game | team.games]) 
+    |> Ecto.Changeset.put_assoc(:games, [game | team.games])
     |> Repo.update!()
 
     {:ok, team}

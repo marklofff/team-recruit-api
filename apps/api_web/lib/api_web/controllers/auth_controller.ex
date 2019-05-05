@@ -33,6 +33,7 @@ defmodule ApiWeb.AuthController do
         conn
         |> put_session(:current_user, user)
         |> redirect(to: "/")
+
       {:error, reason} ->
         conn
         |> redirect(to: "/")

@@ -35,8 +35,8 @@ defmodule Api.Accounts do
   def get_user!(id) do
     query =
       from u in User,
-      where: u.id == ^id,
-      preload: [:social_accounts, :teams, :games]
+        where: u.id == ^id,
+        preload: [:social_accounts, :teams, :games]
 
     Repo.one!(query)
   end
@@ -62,7 +62,6 @@ defmodule Api.Accounts do
     user = Repo.preload(user, [:social_accounts, :teams, :games])
     {:ok, user}
   end
-
 
   @doc """
   Creates a new social account for a user.
@@ -105,7 +104,6 @@ defmodule Api.Accounts do
     User.changeset(user, %{})
   end
 
-
   defp fetch_user(provider, uid) do
     User
     |> join(:left, [u], s in assoc(u, :social_accounts), on: s.uid == ^uid)
@@ -120,15 +118,17 @@ defmodule Api.Accounts do
     case get_user_by_profile(provider, uid) do
       %User{} = user ->
         {:ok, Repo.preload(user, [:social_accounts, :teams])}
+
       nil ->
         nickname =
           profile.name
-          |> String.split
+          |> String.split()
           |> Enum.at(-1)
 
         create_user(%{
           avatar: profile.avatar,
-          provider: profile.provider, # register with this provider
+          # register with this provider
+          provider: profile.provider,
           nickname: nickname,
           social_accounts: [profile]
         })
@@ -138,12 +138,15 @@ defmodule Api.Accounts do
   @doc """
   Connect an social account to a existing user
   """
-  def find_or_create(%User{} = current_user,
-    %{provider: provider, uid: uid} = profile)
-  do
-    case get_user_by_profile(provider, uid) do # if user does not have this provider
+  def find_or_create(
+        %User{} = current_user,
+        %{provider: provider, uid: uid} = profile
+      ) do
+    # if user does not have this provider
+    case get_user_by_profile(provider, uid) do
       %User{} = user ->
         {:ok, Repo.preload(user, [:social_accounts])}
+
       nil ->
         add_social_account(current_user, profile)
         {:ok, current_user}
@@ -152,8 +155,7 @@ defmodule Api.Accounts do
 
   def get_user_by_profile(provider, uid) do
     User
-    |> join(:left, [u], s in assoc(u, :social_accounts),
-      on: s.uid == ^uid)
+    |> join(:left, [u], s in assoc(u, :social_accounts), on: s.uid == ^uid)
     |> where([u, s], s.provider == ^provider)
     |> Repo.one()
   end
@@ -165,13 +167,15 @@ defmodule Api.Accounts do
   end
 
   defp get_by_email(email) when is_binary(email) do
-    query = from u in User, 
-      where: u.email == ^email,
-      preload: [:steam_account]
+    query =
+      from u in User,
+        where: u.email == ^email,
+        preload: [:steam_account]
 
     case Repo.one(query) do
       nil ->
         {:error, "Login error."}
+
       user ->
         {:ok, user}
     end
@@ -184,6 +188,7 @@ defmodule Api.Accounts do
   end
 
   defp verify_pass(nil, _), do: {:error, "Incorrect email or password."}
+
   defp verify_pass(user, plain_text_password) do
     case Argon2.verify_pass(plain_text_password, user.password) do
       true -> {:ok, user}
