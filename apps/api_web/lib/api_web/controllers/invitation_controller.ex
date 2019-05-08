@@ -49,7 +49,8 @@ defmodule ApiWeb.InvitationController do
   def update(conn, %{"id" => id, "invites" => invites_params}) do
     invites = Notifications.get_invitation!(id)
 
-    with {:ok, %Invitation{} = invites} <- Notifications.update_invitation(invites, invites_params) do
+    with {:ok, %Invitation{} = invites} <-
+           Notifications.update_invitation(invites, invites_params) do
       render(conn, "show.json", invites: invites)
     end
   end

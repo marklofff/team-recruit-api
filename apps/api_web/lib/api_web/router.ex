@@ -22,7 +22,7 @@ defmodule ApiWeb.Router do
   end
 
   # auth required
-  scope "/api/v1", ApiWeb do
+  scope "/api", ApiWeb do
     pipe_through [:api, :authenticated]
 
     get "/me", UserController, :me
@@ -56,8 +56,19 @@ defmodule ApiWeb.Router do
   end
 
   # auth not required
-  scope "/api/v1", ApiWeb do
+  scope "/api" do
     pipe_through :api
+
+    forward "/graphql", Absinthe.Plug, schema: ApiWeb.Schema
+
+    if Mix.env() == :dev do
+      forward(
+        "/graphiql",
+        Absinthe.Plug.GraphiQL,
+        schema: ApiWeb.Schema,
+        context: %{pubsub: ApiWeb.Endpoint}
+      )
+    end
 
     # thirdparty
     scope "/auth" do
