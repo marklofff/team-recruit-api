@@ -18,7 +18,6 @@ defmodule ApiWeb.NotificationChannel do
   # It is also common to receive messages from the client and
   # broadcast to everyone in the current topic (notification:lobby).
   def handle_in("notificatio:new", payload, socket) do
-    IO.puts("test")
     broadcast!("notification:" <> payload, "new", payload)
     {:noreply, socket}
   end

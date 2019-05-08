@@ -7,7 +7,6 @@ defmodule Api.TeamManager do
 
   alias Api.Repo
   alias Api.TeamManager.{Team, Member}
-  alias Api.Accounts.User
 
   @doc """
   Returns the list of teams.
@@ -18,7 +17,7 @@ defmodule Api.TeamManager do
       [%Team{}, ...]
 
   """
-  def list_teams(params \\ %{}) do
+  def list_teams do
     Team
     |> order_by(desc: :inserted_at)
     |> preload(members: :user)
@@ -55,10 +54,6 @@ defmodule Api.TeamManager do
   end
 
   def get_team_by_tag!(tag) do
-    user_query =
-      from u in User,
-        preload: [:games]
-
     query =
       from t in Team,
         where: t.tag == ^tag,

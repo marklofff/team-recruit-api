@@ -53,10 +53,6 @@ defmodule ApiWeb.Router do
 
       get "/games", ProfileController, :get_available_games
     end
-
-    scope "/stats/csgo" do
-      get "/get_user_stats_for_game", CsgoStatsController, :get_user_stats_for_game
-    end
   end
 
   # auth not required

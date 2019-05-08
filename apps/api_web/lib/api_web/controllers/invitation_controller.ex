@@ -19,7 +19,7 @@ defmodule ApiWeb.InvitationController do
       ApiWeb.Endpoint.broadcast!(
         "notification:" <> to_string(invitation.user_id),
         "invitatio:new",
-        Notifications.create_payload(invitation)
+        Notifications.create_invitation_payload(invitation)
       )
 
       conn
@@ -42,22 +42,22 @@ defmodule ApiWeb.InvitationController do
   end
 
   def show(conn, %{"id" => id}) do
-    invites = Notifications.get_invites!(id)
+    invites = Notifications.get_invitation!(id)
     render(conn, "show.json", invites: invites)
   end
 
   def update(conn, %{"id" => id, "invites" => invites_params}) do
-    invites = Notifications.get_invites!(id)
+    invites = Notifications.get_invitation!(id)
 
-    with {:ok, %Invitation{} = invites} <- Notifications.update_invites(invites, invites_params) do
+    with {:ok, %Invitation{} = invites} <- Notifications.update_invitation(invites, invites_params) do
       render(conn, "show.json", invites: invites)
     end
   end
 
   def delete(conn, %{"id" => id}) do
-    invites = Notifications.get_invites!(id)
+    invites = Notifications.get_invitation!(id)
 
-    with {:ok, %Invitation{}} <- Notifications.delete_invites(invites) do
+    with {:ok, %Invitation{}} <- Notifications.delete_invitation(invites) do
       send_resp(conn, :no_content, "")
     end
   end

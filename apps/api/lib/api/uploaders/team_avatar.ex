@@ -44,7 +44,7 @@ defmodule Api.TeamAvatar do
   # def storage_dir(version, {file, scope}) do
   #   "uploads/user/avatars/#{scope.id}"
   # end
-  def storage_dir(version, {file, scope}) do
+  def storage_dir(_version, {file, scope}) do
     if Map.has_key?(file, :path) do
       case String.contains?(file.path, "candidate_pics") do
         true ->

@@ -1,6 +1,6 @@
 defmodule ApiWeb.UserView do
   use ApiWeb, :view
-  alias ApiWeb.{UserView, LinkView, TeamView}
+  alias ApiWeb.{UserView}
   alias Api.Avatar
 
   def render("index.json", %{users: users}) do

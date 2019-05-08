@@ -23,20 +23,4 @@ defmodule ApiWeb.AuthController do
       render(conn, "authenticated_user.json", %{token: token, user: user})
     end
   end
-
-  @doc """
-  TODO: email/password authentication
-  """
-  def identity_callback(%{assigns: %{ueberauth_auth: auth}} = conn, params) do
-    case Accounts.find_or_create(auth) do
-      {:ok, user} ->
-        conn
-        |> put_session(:current_user, user)
-        |> redirect(to: "/")
-
-      {:error, reason} ->
-        conn
-        |> redirect(to: "/")
-    end
-  end
 end
