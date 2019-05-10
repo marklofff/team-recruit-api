@@ -21,8 +21,26 @@ defmodule ApiWeb.Router do
     plug ApiWeb.Plugs.ReformatParamsPlug
   end
 
+  pipeline :browser do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_flash
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
+  end
+
+  pipeline :api do
+    plug :accepts, ["json"]
+  end
+
+  scope "/", ApiWeb do
+    pipe_through :browser
+
+  end
+
+
   # auth required
-  scope "/api", ApiWeb do
+  scope "/api/v1", ApiWeb do
     pipe_through [:api, :authenticated]
 
     get "/me", UserController, :me
@@ -55,21 +73,7 @@ defmodule ApiWeb.Router do
     end
   end
 
-  # auth not required
-  scope "/api" do
-    pipe_through :api
-
-    forward "/graphql", Absinthe.Plug, schema: ApiWeb.Schema
-
-    if Mix.env() == :dev do
-      forward(
-        "/graphiql",
-        Absinthe.Plug.GraphiQL,
-        schema: ApiWeb.Schema,
-        context: %{pubsub: ApiWeb.Endpoint}
-      )
-    end
-
+  scope "/api/v1", ApiWeb do
     # thirdparty
     scope "/auth" do
       pipe_through :fetch_available_user
@@ -93,5 +97,21 @@ defmodule ApiWeb.Router do
     get "/games", GameController, :show
     # find players
     get "/players", UserController, :index
+  end
+
+  # auth not required
+  scope "/api" do
+    pipe_through :api
+
+    forward "/graphql", Absinthe.Plug, schema: ApiWeb.Schema
+
+    if Mix.env() == :dev do
+      forward(
+        "/graphiql",
+        Absinthe.Plug.GraphiQL,
+        schema: ApiWeb.Schema,
+        context: %{pubsub: ApiWeb.Endpoint}
+      )
+    end
   end
 end
