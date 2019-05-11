@@ -21,23 +21,9 @@ defmodule ApiWeb.Router do
     plug ApiWeb.Plugs.ReformatParamsPlug
   end
 
-  pipeline :browser do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_flash
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
-  end
-
   pipeline :api do
     plug :accepts, ["json"]
   end
-
-  scope "/", ApiWeb do
-    pipe_through :browser
-
-  end
-
 
   # auth required
   scope "/api/v1", ApiWeb do
@@ -47,29 +33,12 @@ defmodule ApiWeb.Router do
     get "/me/teams", TeamController, :get_my_teams
     get "/me/notifications", InvitationController, :index
 
-    # teams
-    post "/teams", TeamController, :create
-    patch "/teams/:id", TeamController, :update
-    put "/teams/:id", TeamController, :update
-    delete "/teams/:id", TeamController, :delete
-    post "/teams/add_game", TeamController, :add_new_game
-    # end of teams
+    resources "/teams", TeamController do
+      resources "/apply", ApplyController
+    end
 
-    # create new invitation
-    post "/team/:id/invitation/", InvitationController, :create
-    # accepts an invitation
-    patch "/team/:id/invitation/:id/accept", InvitationController, :accept_invitation
-    # deletes an invitation
-    delete "/team/:id/invitation/:id/cancel", InvitationController, :delete_invitation
-    # reject an invitation
-    patch "/team/:id/invitation/:id/reject", InvitationController, :reject_invitation
-
-    scope "/profile" do
-      get "/owned_games", ProfileController, :get_owned_games
-      post "/owned_games", ProfileController, :add_owned_games
-      post "/set_avatar", UserController, :set_avatar
-
-      get "/games", ProfileController, :get_available_games
+    resources "/players", UserController, only: [:show] do
+      resources "/invitation", InvitationController,
     end
   end
 

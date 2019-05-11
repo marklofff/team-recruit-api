@@ -1,6 +1,6 @@
 defmodule ApiWeb.AuthController do
   @moduledoc """
-    AuthController
+  AuthController
   """
   use ApiWeb, :controller
 
