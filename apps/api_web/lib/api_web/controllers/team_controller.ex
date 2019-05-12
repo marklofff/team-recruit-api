@@ -51,8 +51,8 @@ defmodule ApiWeb.TeamController do
     render(conn, "index.json", teams: teams)
   end
 
-  def add_new_member(conn, %{"user_id" => user_id, "team_id" => team_id} = params) do
-    with {:ok, _updated_team} <- TeamManager.add_member(params) do
+  def add_new_member(conn, %{"user_id" => user_id, "team_id" => team_id} = _params) do
+    with {:ok, _updated_team} <- TeamManager.add_member(user_id, team_id) do
       json(conn, %{success: true})
     end
   end

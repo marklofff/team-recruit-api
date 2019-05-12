@@ -1,6 +1,6 @@
 defmodule ApiWeb.AuthController do
   @moduledoc """
-    AuthController
+  AuthController
   """
   use ApiWeb, :controller
 
@@ -24,19 +24,7 @@ defmodule ApiWeb.AuthController do
     end
   end
 
-  @doc """
-  TODO: email/password authentication
-  """
-  def identity_callback(%{assigns: %{ueberauth_auth: auth}} = conn, params) do
-    case Accounts.find_or_create(auth) do
-      {:ok, user} ->
-        conn
-        |> put_session(:current_user, user)
-        |> redirect(to: "/")
-
-      {:error, reason} ->
-        conn
-        |> redirect(to: "/")
-    end
+  def callback(conn, _params) do
+    {:error, "Invalid Params."}
   end
 end

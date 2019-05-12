@@ -21,6 +21,10 @@ defmodule ApiWeb.Router do
     plug ApiWeb.Plugs.ReformatParamsPlug
   end
 
+  pipeline :api do
+    plug :accepts, ["json"]
+  end
+
   # auth required
   scope "/api/v1", ApiWeb do
     pipe_through [:api, :authenticated]
@@ -29,40 +33,16 @@ defmodule ApiWeb.Router do
     get "/me/teams", TeamController, :get_my_teams
     get "/me/notifications", InvitationController, :index
 
-    # teams
-    post "/teams", TeamController, :create
-    patch "/teams/:id", TeamController, :update
-    put "/teams/:id", TeamController, :update
-    delete "/teams/:id", TeamController, :delete
-    post "/teams/add_game", TeamController, :add_new_game
-    # end of teams
-
-    # create new invitation
-    post "/team/:id/invitation/", InvitationController, :create
-    # accepts an invitation
-    patch "/team/:id/invitation/:id/accept", InvitationController, :accept_invitation
-    # deletes an invitation
-    delete "/team/:id/invitation/:id/cancel", InvitationController, :delete_invitation
-    # reject an invitation
-    patch "/team/:id/invitation/:id/reject", InvitationController, :reject_invitation
-
-    scope "/profile" do
-      get "/owned_games", ProfileController, :get_owned_games
-      post "/owned_games", ProfileController, :add_owned_games
-      post "/set_avatar", UserController, :set_avatar
-
-      get "/games", ProfileController, :get_available_games
+    resources "/teams", TeamController do
+      resources "/apply", ApplyController
     end
 
-    scope "/stats/csgo" do
-      get "/get_user_stats_for_game", CsgoStatsController, :get_user_stats_for_game
+    resources "/players", UserController, only: [:show] do
+      resources "/invitation", InvitationController
     end
   end
 
-  # auth not required
   scope "/api/v1", ApiWeb do
-    pipe_through :api
-
     # thirdparty
     scope "/auth" do
       pipe_through :fetch_available_user
@@ -86,5 +66,21 @@ defmodule ApiWeb.Router do
     get "/games", GameController, :show
     # find players
     get "/players", UserController, :index
+  end
+
+  # auth not required
+  scope "/api" do
+    pipe_through :api
+
+    forward "/graphql", Absinthe.Plug, schema: ApiWeb.Schema
+
+    if Mix.env() == :dev do
+      forward(
+        "/graphiql",
+        Absinthe.Plug.GraphiQL,
+        schema: ApiWeb.Schema,
+        context: %{pubsub: ApiWeb.Endpoint}
+      )
+    end
   end
 end

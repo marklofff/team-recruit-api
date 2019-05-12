@@ -17,13 +17,17 @@ defmodule Api.Notifications do
       [%invitation{}, ...]
 
   """
-  def list_invitation(user_id) do
+  def list_invitation(user_id) when is_binary(user_id) do
     query =
       from i in Invitation,
         where: i.user_id == ^user_id,
         preload: [[team: :user], :user]
 
     Repo.all(query)
+  end
+
+  def list_invitation(_) do
+    Repo.all(Invitation)
   end
 
   def create_invitation_payload(invitation) do
@@ -33,10 +37,6 @@ defmodule Api.Notifications do
         team: %{name: invitation.team.name, user: invitation.team.user.name}
       }
     }
-  end
-
-  def list_invitation(_) do
-    Repo.all(Invitation)
   end
 
   @doc """

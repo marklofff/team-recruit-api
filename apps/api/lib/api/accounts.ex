@@ -104,13 +104,6 @@ defmodule Api.Accounts do
     User.changeset(user, %{})
   end
 
-  defp fetch_user(provider, uid) do
-    User
-    |> join(:left, [u], s in assoc(u, :social_accounts), on: s.uid == ^uid)
-    |> where([u, s], s.provider == ^provider)
-    |> Repo.one()
-  end
-
   @doc """
     Creates a user within a social account connected.
   """

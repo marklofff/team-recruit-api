@@ -1,9 +1,9 @@
-defmodule ApiWeb.InvitationController do
+defmodule ApiWeb.ApplyController do
   use ApiWeb, :controller
 
   alias Api.TeamManager
   alias Api.Notifications
-  alias Api.Notifications.Invitation
+  alias Api.Notifications.Apply
 
   action_fallback ApiWeb.FallbackController
 
@@ -15,7 +15,7 @@ defmodule ApiWeb.InvitationController do
   def create(%{assigns: %{user: user}} = conn, params) do
     params = Map.put(params, "user", user)
 
-    with {:ok, %Invitation{} = invitation} <- Notifications.create_invitation(params) do
+    with {:ok, %Apply{} = invitation} <- Notifications.create_invitation(params) do
       ApiWeb.Endpoint.broadcast!(
         "notification:" <> to_string(invitation.user_id),
         "invitatio:new",
@@ -33,7 +33,7 @@ defmodule ApiWeb.InvitationController do
     IO.inspect(invitation)
 
     with true <- Notifications.check_user(invitation, user),
-         {:ok, %Invitation{} = invitation} <-
+         {:ok, %Apply{} = invitation} <-
            Notifications.update_invitation(invitation, %{accepted: true}),
          {:ok, _member} <- TeamManager.add_member(invitation.team_id, invitation.user_id) do
       conn
@@ -49,7 +49,7 @@ defmodule ApiWeb.InvitationController do
   def update(conn, %{"id" => id, "invites" => invites_params}) do
     invites = Notifications.get_invitation!(id)
 
-    with {:ok, %Invitation{} = invites} <-
+    with {:ok, %Apply{} = invites} <-
       Notifications.update_invitation(invites, invites_params) do
       render(conn, "show.json", invites: invites)
     end
@@ -58,7 +58,7 @@ defmodule ApiWeb.InvitationController do
   def delete(conn, %{"id" => id}) do
     invites = Notifications.get_invitation!(id)
 
-    with {:ok, %Invitation{}} <- Notifications.delete_invitation(invites) do
+    with {:ok, %Apply{}} <- Notifications.delete_invitation(invites) do
       send_resp(conn, :no_content, "")
     end
   end

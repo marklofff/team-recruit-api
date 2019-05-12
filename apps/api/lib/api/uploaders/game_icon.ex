@@ -43,7 +43,7 @@ defmodule Api.GameIcon do
   # def storage_dir(version, {file, scope}) do
   #   "uploads/user/avatars/#{scope.id}"
   # end
-  def storage_dir(version, {file, scope}) do
+  def storage_dir(_version, {_file, scope}) do
     "uploads/user/avatars/#{scope.uuid}"
   end
 

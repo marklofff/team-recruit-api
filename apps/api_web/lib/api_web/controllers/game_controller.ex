@@ -2,7 +2,6 @@ defmodule ApiWeb.GameController do
   use ApiWeb, :controller
 
   alias Api.Games
-  alias Api.Games.Game
 
   action_fallback ApiWeb.FallbackController
 

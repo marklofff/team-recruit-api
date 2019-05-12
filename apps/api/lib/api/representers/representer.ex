@@ -3,15 +3,26 @@ defmodule Api.Representer do
     SteamRepresenter,
     GoogleRepresenter,
     TwitterRepresenter,
-    DiscordRepresenter
+    DiscordRepresenter,
+    LocalRepresenter
   }
 
-  alias Api.Representer.{SteamStruct, GoogleStruct, TwitterStruct, DiscordStruct}
+  alias Api.Representer.{
+    SteamStruct,
+    GoogleStruct,
+    TwitterStruct,
+    DiscordStruct,
+    LocalStruct
+  }
 
   def to_map(params) do
     params["provider"]
     |> String.to_atom()
     |> to_map(params)
+  end
+
+  def to_map(:local, profile) do
+    LocalRepresenter.to_map(profile, as: %LocalStruct{})
   end
 
   def to_map(:steam, profile) do
