@@ -23,4 +23,8 @@ defmodule ApiWeb.AuthController do
       render(conn, "authenticated_user.json", %{token: token, user: user})
     end
   end
+
+  def callback(conn, _params) do
+    {:error, "Invalid Params."}
+  end
 end

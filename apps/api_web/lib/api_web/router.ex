@@ -38,7 +38,7 @@ defmodule ApiWeb.Router do
     end
 
     resources "/players", UserController, only: [:show] do
-      resources "/invitation", InvitationController,
+      resources "/invitation", InvitationController
     end
   end
 
