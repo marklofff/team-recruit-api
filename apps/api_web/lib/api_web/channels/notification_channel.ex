@@ -23,7 +23,7 @@ defmodule ApiWeb.NotificationChannel do
   end
 
   # Add authorization logic here as required.
-  defp authorized?(user_id, %{assigns: user}) do
+  defp authorized?(_user_id, %{assigns: _user}) do
     true
   end
 end

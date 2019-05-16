@@ -20,7 +20,7 @@ defmodule Api.Accounts.SocialAccounts do
   def changeset(social_account, attrs) do
     social_account
     |> cast(attrs, [:email, :avatar, :name, :uid, :provider])
-    |> validate_required([:avatar, :name, :uid, :provider])
+    |> validate_required([:name, :provider])
     |> unique_constraint(:user_id)
   end
 end

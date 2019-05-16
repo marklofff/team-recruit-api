@@ -36,7 +36,7 @@ defmodule Api.Accounts.User do
   end
 
   @doc """
-    Put Email/Password
+  Put Email/Password
   """
   def update_changeset(user, attrs) do
     user

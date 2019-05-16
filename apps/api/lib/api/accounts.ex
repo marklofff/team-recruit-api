@@ -33,12 +33,11 @@ defmodule Api.Accounts do
 
   """
   def get_user!(id) do
-    query =
+    Repo.one!(
       from u in User,
-        where: u.id == ^id,
-        preload: [:social_accounts, :teams, :games]
-
-    Repo.one!(query)
+      where: u.id == ^id,
+      preload: [:social_accounts, :teams, :games]
+    )
   end
 
   @doc """
@@ -120,7 +119,26 @@ defmodule Api.Accounts do
 
         create_user(%{
           avatar: profile.avatar,
-          # register with this provider
+          provider: profile.provider,
+          nickname: nickname,
+          social_accounts: [profile]
+        })
+    end
+  end
+
+  def find_or_create(%{provider: provider} = profile) do
+    case get_user_by_email(provider, profile.email) do
+      %User{} = user ->
+        {:ok, Repo.preload(user, [:social_accounts, :teams])}
+
+      nil ->
+        nickname =
+          profile.name
+          |> String.split()
+          |> Enum.at(-1)
+
+        create_user(%{
+          avatar: profile.avatar,
           provider: profile.provider,
           nickname: nickname,
           social_accounts: [profile]
@@ -146,10 +164,18 @@ defmodule Api.Accounts do
     end
   end
 
+
   def get_user_by_profile(provider, uid) do
     User
     |> join(:left, [u], s in assoc(u, :social_accounts), on: s.uid == ^uid)
     |> where([u, s], s.provider == ^provider)
+    |> Repo.one()
+  end
+
+  def get_user_by_email(provider, email) do
+    User
+    |> where([u], u.provider == ^provider)
+    |> where([u], u.email == ^email)
     |> Repo.one()
   end
 
@@ -166,11 +192,8 @@ defmodule Api.Accounts do
         preload: [:steam_account]
 
     case Repo.one(query) do
-      nil ->
-        {:error, "Login error."}
-
-      user ->
-        {:ok, user}
+      nil -> {:error, "Login error."}
+      user -> {:ok, user}
     end
   end
 
@@ -181,7 +204,6 @@ defmodule Api.Accounts do
   end
 
   defp verify_pass(nil, _), do: {:error, "Incorrect email or password."}
-
   defp verify_pass(user, plain_text_password) do
     case Argon2.verify_pass(plain_text_password, user.password) do
       true -> {:ok, user}

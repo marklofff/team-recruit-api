@@ -21,10 +21,6 @@ defmodule ApiWeb.Router do
     plug ApiWeb.Plugs.ReformatParamsPlug
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
-  end
-
   # auth required
   scope "/api/v1", ApiWeb do
     pipe_through [:api, :authenticated]
@@ -42,33 +38,16 @@ defmodule ApiWeb.Router do
     end
   end
 
+  # API's that does not require authentication.
   scope "/api/v1", ApiWeb do
     # thirdparty
     scope "/auth" do
       pipe_through :fetch_available_user
       post "/:provider", AuthController, :callback
     end
-
-    # authentication
-    post "/login", UserController, :login
-    post "/register", UserController, :register
-
-    # teams
-    get "/teams", TeamController, :index
-    get "/teams/:tag", TeamController, :show
-
-    # user
-    patch "/user", UserController, :update
-    put "/user", UserController, :update
-    get "/profile/:uuid", UserController, :show
-
-    # games
-    get "/games", GameController, :show
-    # find players
-    get "/players", UserController, :index
   end
 
-  # auth not required
+  # GraphiQL
   scope "/api" do
     pipe_through :api
 
