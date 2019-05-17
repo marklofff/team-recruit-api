@@ -8,7 +8,6 @@ defmodule ApiWeb.Application do
   def start(_type, _args) do
     children = [
       ApiWeb.Endpoint,
-      {Absinthe.Subscription, [ApiWeb.Endpoint]} # add this line
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

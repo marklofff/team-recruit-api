@@ -24,7 +24,7 @@ defmodule ApiWeb.MixProject do
   def application do
     [
       mod: {ApiWeb.Application, []},
-      extra_applications: [:logger, :runtime_tools, :absinthe_plug]
+      extra_applications: [:logger, :runtime_tools]
     ]
   end
 

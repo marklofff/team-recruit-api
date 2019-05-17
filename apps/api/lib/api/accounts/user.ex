@@ -28,11 +28,12 @@ defmodule Api.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:uuid, :nickname, :provider])
+    |> cast(attrs, [:uuid, :nickname, :provider, :email])
     |> cast_assoc(:social_accounts)
     |> validate_required([])
     |> Api.Utils.check_uuid()
     |> cast_attachments(attrs, [:avatar], allow_urls: true)
+    |> unique_constraint(:email)
   end
 
   @doc """

@@ -21,7 +21,6 @@ defmodule ApiWeb.Router do
     plug ApiWeb.Plugs.ReformatParamsPlug
   end
 
-  # auth required
   scope "/api/v1", ApiWeb do
     pipe_through [:api, :authenticated]
 
@@ -38,28 +37,15 @@ defmodule ApiWeb.Router do
     end
   end
 
-  # API's that does not require authentication.
   scope "/api/v1", ApiWeb do
-    # thirdparty
+    scope "/auth" do
+      post "/register", AuthController, :register
+      post "/login", AuthController, :login
+    end
+
     scope "/auth" do
       pipe_through :fetch_available_user
       post "/:provider", AuthController, :callback
-    end
-  end
-
-  # GraphiQL
-  scope "/api" do
-    pipe_through :api
-
-    forward "/graphql", Absinthe.Plug, schema: ApiWeb.Schema
-
-    if Mix.env() == :dev do
-      forward(
-        "/graphiql",
-        Absinthe.Plug.GraphiQL,
-        schema: ApiWeb.Schema,
-        context: %{pubsub: ApiWeb.Endpoint}
-      )
     end
   end
 end

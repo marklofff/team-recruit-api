@@ -37,8 +37,9 @@ defmodule ApiWeb.UserView do
       bio: user.bio,
       avatar: Avatar.url({user.avatar, user}, :original),
       uuid: user.uuid,
-      social_accounts:
-        render_many(user.social_accounts, __MODULE__, "social_accounts.json", as: :social_accounts)
+      social_accounts: render_many(user.social_accounts,
+        __MODULE__, "social_accounts.json", as: :social_accounts),
+      email: user.email
     }
   end
 end

@@ -53,13 +53,10 @@ defmodule Api.Accounts do
 
   """
   def create_user(attrs \\ %{}) do
-    {:ok, user} =
-      %User{}
-      |> User.changeset(attrs)
-      |> Repo.insert()
+    %User{}
+    |> User.changeset(attrs)
+    |> Repo.insert()
 
-    user = Repo.preload(user, [:social_accounts, :teams, :games])
-    {:ok, user}
   end
 
   @doc """
@@ -110,39 +107,32 @@ defmodule Api.Accounts do
     case get_user_by_profile(provider, uid) do
       %User{} = user ->
         {:ok, Repo.preload(user, [:social_accounts, :teams])}
-
       nil ->
-        nickname =
-          profile.name
-          |> String.split()
-          |> Enum.at(-1)
-
-        create_user(%{
-          avatar: profile.avatar,
-          provider: profile.provider,
-          nickname: nickname,
-          social_accounts: [profile]
-        })
+        create_user_from_profile(profile)
     end
   end
 
   def find_or_create(%{provider: provider} = profile) do
-    case get_user_by_email(provider, profile.email) do
-      %User{} = user ->
-        {:ok, Repo.preload(user, [:social_accounts, :teams])}
+    create_user_from_profile(profile)
+  end
 
-      nil ->
-        nickname =
-          profile.name
-          |> String.split()
-          |> Enum.at(-1)
+  def create_user_from_profile(profile) do
+    IO.inspect profile
+    nickname =
+      profile.name
+      |> String.split()
+      |> Enum.at(-1)
 
-        create_user(%{
-          avatar: profile.avatar,
-          provider: profile.provider,
-          nickname: nickname,
-          social_accounts: [profile]
-        })
+    attrs = %{
+      email: profile.email,
+      avatar: profile.avatar,
+      provider: profile.provider,
+      nickname: nickname,
+      social_accounts: [profile]
+    }
+    
+    with {:ok, %User{} = user} <- create_user(attrs) do
+      Repo.preload(user, [:social_accounts, :teams, :games])
     end
   end
 
@@ -176,6 +166,7 @@ defmodule Api.Accounts do
     User
     |> where([u], u.provider == ^provider)
     |> where([u], u.email == ^email)
+    |> preload(:social_accounts)
     |> Repo.one()
   end
 

@@ -30,10 +30,6 @@ defmodule TeamRecruitApi.Umbrella.MixProject do
       {:scribe, "~> 0.8", only: [:dev, :test]},
       {:ex_spec, "~> 2.0", only: :test},
       {:faker, "~> 0.12", only: :test},
-      {:absinthe, "~> 1.4.0"},
-      {:absinthe_ecto, "~> 0.1.3"},
-      {:absinthe_plug, "~> 1.4.0"},
-      {:absinthe_phoenix, "~> 1.4.0"},
     ]
   end
 

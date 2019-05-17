@@ -24,7 +24,21 @@ defmodule ApiWeb.AuthController do
     end
   end
 
-  def callback(conn, _params) do
+  def register(%{assigns: %{auth: auth}} = conn, _params) do
+    with %User{} = user <- Accounts.create_user_from_profile(auth),
+         {:ok, token, _claims} <- Guardian.encode_and_sign(user) do
+      render(conn, "authenticated_user.json", %{token: token, user: user})
+    end
+  end
+
+  def login(%{assigns: %{auth: auth}} = conn, _params) do
+    with %User{} = user <- Accounts.get_user_by_email(:local, auth.email),
+         {:ok, token, _claims} <- Guardian.encode_and_sign(user) do
+      render(conn, "authenticated_user.json", %{token: token, user: user})
+    end
+  end
+
+  def callback(_conn, _params) do
     {:error, "Invalid Params."}
   end
 end
