@@ -79,17 +79,13 @@ defmodule Api.Accounts do
       provider: social_account.provider,
       uid: social_account.uid,
       user_id: user.id
-    }
-    |> Repo.insert!()
+    } |> Repo.insert!()
   end
 
   def update_user(%User{} = user, attrs) do
-    {:ok, result} =
-      user
-      |> User.changeset(attrs)
-      |> Repo.update()
-
-    {:ok, Repo.preload(result, [{:teams, [:user, :games, :awards]}, :games])}
+    user
+    |> User.changeset(attrs)
+    |> Repo.update()
   end
 
   def delete_user(%User{} = user) do
@@ -117,17 +113,11 @@ defmodule Api.Accounts do
   end
 
   def create_user_from_profile(profile) do
-    IO.inspect profile
-    nickname =
-      profile.name
-      |> String.split()
-      |> Enum.at(-1)
-
     attrs = %{
       email: profile.email,
       avatar: profile.avatar,
       provider: profile.provider,
-      nickname: nickname,
+      nickname: profile.name |> String.split() |> Enum.at(-1),
       social_accounts: [profile]
     }
     
@@ -137,23 +127,21 @@ defmodule Api.Accounts do
   end
 
   @doc """
-  Connect an social account to a existing user
+    Connect an social account to a existing user
   """
   def find_or_create(
-        %User{} = current_user,
-        %{provider: provider, uid: uid} = profile
-      ) do
+    %User{} = current_user,
+    %{provider: provider, uid: uid} = profile
+  ) do
     # if user does not have this provider
     case get_user_by_profile(provider, uid) do
       %User{} = user ->
         {:ok, Repo.preload(user, [:social_accounts])}
-
       nil ->
         add_social_account(current_user, profile)
         {:ok, current_user}
     end
   end
-
 
   def get_user_by_profile(provider, uid) do
     User
