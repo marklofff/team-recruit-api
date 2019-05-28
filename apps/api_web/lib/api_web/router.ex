@@ -22,6 +22,21 @@ defmodule ApiWeb.Router do
   end
 
   scope "/api/v1", ApiWeb do
+    scope "/auth" do
+      post "/register", AuthController, :register
+      post "/login", AuthController, :login
+    end
+
+    resources "/teams", TeamController, only: [:index]
+    resources "/players", UserController, only: [:index]
+
+    scope "/auth" do
+      pipe_through :fetch_available_user
+      post "/:provider", AuthController, :callback
+    end
+  end
+
+  scope "/api/v1", ApiWeb do
     pipe_through [:api, :authenticated]
 
     get "/me", UserController, :me
@@ -34,18 +49,6 @@ defmodule ApiWeb.Router do
 
     resources "/players", UserController, only: [:show] do
       resources "/invitation", InvitationController
-    end
-  end
-
-  scope "/api/v1", ApiWeb do
-    scope "/auth" do
-      post "/register", AuthController, :register
-      post "/login", AuthController, :login
-    end
-
-    scope "/auth" do
-      pipe_through :fetch_available_user
-      post "/:provider", AuthController, :callback
     end
   end
 end
