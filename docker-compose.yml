@@ -14,14 +14,16 @@ services:
     volumes:
       - .:/opt/app
     ports:
-      - '4000:4000'
+      - "4001:4001"
+      - "4002:4002"
+      - "4003:4003"
+      - "4004:4004"
     depends_on:
       - db
     env_file:
       - .env
     command: iex -S mix phx.server
     environment:
-      NODE_ENV: 'development'
       POSTGRES_DB: 'app_dev'
       POSTGRES_HOST: db
       POSTGRES_USER: 'postgres'
