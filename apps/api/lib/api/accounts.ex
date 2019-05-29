@@ -100,9 +100,9 @@ defmodule Api.Accounts do
     Creates a user within a social account connected.
   """
   def find_or_create(%{provider: provider, uid: uid} = profile) do
-    case get_user_by_profile(provider, uid) do
-      %User{} = user ->
-        {:ok, Repo.preload(user, [:social_accounts, :teams])}
+    with %User{} = user <- get_user_by_profile(provider, uid) do
+      {:ok, Repo.preload(user, [:social_accounts, :teams])}
+    else
       nil ->
         create_user_from_profile(profile)
     end
@@ -121,8 +121,10 @@ defmodule Api.Accounts do
       social_accounts: [profile]
     }
     
-    with {:ok, %User{} = user} <- create_user(attrs) do
-      Repo.preload(user, [:social_accounts, :teams, :games])
+    case create_user(attrs) do
+      {:ok, %User{} = user} ->
+        Repo.preload(user, [:social_accounts, :teams, :games])
+      {:error, err} -> {:error, err}
     end
   end
 
