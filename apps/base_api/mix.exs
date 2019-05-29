@@ -5,6 +5,10 @@ defmodule BaseApi.MixProject do
     [
       app: :base_api,
       version: "0.1.0",
+      build_path: "../../_build",
+      config_path: "../../config/config.exs",
+      deps_path: "../../deps",
+      lockfile: "../../mix.lock",
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
@@ -19,7 +23,7 @@ defmodule BaseApi.MixProject do
   def application do
     [
       mod: {BaseApi.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :database]
     ]
   end
 
@@ -36,7 +40,9 @@ defmodule BaseApi.MixProject do
       {:phoenix_pubsub, "~> 1.1"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:cors_plug, "~> 2.0"},
+      {:database, in_umbrella: true}
     ]
   end
 end
