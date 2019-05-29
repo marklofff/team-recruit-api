@@ -1,3 +1,0 @@
-# TeamRecruitApi
-
-**TODO: Add description**
