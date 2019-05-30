@@ -1,6 +1,6 @@
 defmodule BaseApi.Plugs.AuthenticatedFromCookie do
   import Plug.Conn
-  alias Api.Accounts
+  alias Database.Accounts
 
   def init(options), do: options
 

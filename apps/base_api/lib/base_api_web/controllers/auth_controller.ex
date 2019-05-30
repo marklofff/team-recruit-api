@@ -4,8 +4,8 @@ defmodule BaseApiWeb.AuthController do
   """
   use BaseApiWeb, :controller
 
-  alias Api.Accounts
-  alias Api.Accounts.User
+  alias Database.Accounts
+  alias Database.Accounts.User
   alias BaseApi.Guardian
 
   action_fallback BaseApiWeb.FallbackController

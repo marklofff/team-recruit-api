@@ -1,8 +1,8 @@
 defmodule BaseApiWeb.TeamController do
   use BaseApiWeb, :controller
 
-  alias Api.TeamManager
-  alias Api.TeamManager.Team
+  alias Database.TeamManager
+  alias Database.TeamManager.Team
 
   action_fallback BaseApiWeb.FallbackController
 

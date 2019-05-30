@@ -1,9 +1,9 @@
 defmodule BaseApiWeb.InvitationController do
   use BaseApiWeb, :controller
 
-  alias Api.TeamManager
-  alias Api.Notifications
-  alias Api.Notifications.Invitation
+  alias Database.TeamManager
+  alias Database.Notifications
+  alias Database.Notifications.Invitation
 
   action_fallback BaseApiWeb.FallbackController
 

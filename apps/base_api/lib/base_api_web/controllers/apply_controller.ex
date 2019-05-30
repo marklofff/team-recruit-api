@@ -1,9 +1,9 @@
 defmodule BaseApiWeb.ApplyController do
   use BaseApiWeb, :controller
 
-  alias Api.TeamManager
-  alias Api.UserManager
-  alias Api.Notifications.Apply
+  alias Database.TeamManager
+  alias Database.UserManager
+  alias Database.Notifications.Apply
 
   action_fallback BaseApiWeb.FallbackController
 
@@ -16,7 +16,7 @@ defmodule BaseApiWeb.ApplyController do
     params = Map.put(params, "user", user)
 
     with {:ok, %Apply{} = apply} <- UserManager.create_apply(params) do
-      BaseApi.Endpoint.broadcast!(
+      BaseApiWeb.Endpoint.broadcast!(
         "notification:" <> to_string(apply.user_id),
         "apply:new",
         UserManager.create_apply_payload(apply)

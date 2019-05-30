@@ -1,8 +1,8 @@
 defmodule BaseApiWeb.UserController do
   use BaseApiWeb, :controller
 
-  alias Api.Accounts
-  alias Api.Accounts.User
+  alias Database.Accounts
+  alias Database.Accounts.User
 
   action_fallback BaseApiWeb.FallbackController
 

@@ -1,10 +1,10 @@
 defmodule BaseApiWeb.ProfileController do
   use BaseApiWeb, :controller
 
-  alias Api.Games
-  alias Api.Profile
-  alias Api.Profile.OwnedGames
-  alias Api.Accounts.User
+  alias Database.Games
+  alias Database.Profile
+  alias Database.Profile.OwnedGames
+  alias Database.Accounts.User
 
   action_fallback BaseApiWeb.FallbackController
 
