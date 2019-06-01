@@ -17,7 +17,7 @@ defmodule Database.TeamManager.Team do
     field :wanted_num, :integer
 
     # avatar
-    field :avatar, Database.TeamAvatar.Type
+    field :avatar, ImageUploader.TeamAvatar.Type
     field :uuid, :string
 
     # leader

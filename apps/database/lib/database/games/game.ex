@@ -10,7 +10,7 @@ defmodule Database.Games.Game do
     field :full_name, :string
     field :short_name, :string
     field :provider, :string
-    field :icon, Database.GameIcon.Type
+    field :icon, ImageUploader.GameIcon.Type
 
     many_to_many :teams, Team, join_through: "teams_games"
     many_to_many :users, Team, join_through: "users_games"

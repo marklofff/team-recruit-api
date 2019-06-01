@@ -7,7 +7,7 @@ defmodule Database.Accounts.User do
   use Arc.Ecto.Schema
 
   schema "users" do
-    field :avatar, Database.Avatar.Type
+    field :avatar, ImageUploader.Avatar.Type
     field :nickname, :string
     field :uuid, :string
     field :bio, :string
