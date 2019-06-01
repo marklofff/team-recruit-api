@@ -8,13 +8,12 @@
 use Mix.Config
 
 # Configures the endpoint
-config :game_stats_api, GameStatsApiWeb.Endpoint,
+config :proxy, BaseApiWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "xQl/3gH1nZhdhJDA3XkgQrxHvmJliPWD62BdQRZ7HxJgMQ6ALJPXBwNu90l6WvEZ",
-  render_errors: [view: GameStatsApiWeb.ErrorView, accepts: ~w(json)],
-  pubsub: [name: GameStatsApi.PubSub, adapter: Phoenix.PubSub.PG2],
+  secret_key_base: "0ho6E86fkmrlw7sbzEjc4W8/Py5lJmxQcB8/skJ5bKdZFGq9Ztrvrj4Bd8yPMT9x",
+  render_errors: [view: BaseApiWeb.ErrorView, accepts: ~w(json)],
+  pubsub: [name: BaseApi.PubSub, adapter: Phoenix.PubSub.PG2],
   server: false
-
 
 # Configures Elixir's Logger
 config :logger, :console,

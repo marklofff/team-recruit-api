@@ -12,7 +12,8 @@ config :admin_api, AdminApiWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "WQZAJfNGFQ3XgyeFOU4Y2d6G3gtuA/gbn9TmmytKpVSHWFSK3/DJvX949emOLhn/",
   render_errors: [view: AdminApiWeb.ErrorView, accepts: ~w(json)],
-  pubsub: [name: AdminApi.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: AdminApi.PubSub, adapter: Phoenix.PubSub.PG2],
+  server: false
 
 # Configures Elixir's Logger
 config :logger, :console,
