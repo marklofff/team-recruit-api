@@ -9,34 +9,8 @@
 # move said applications out of the umbrella.
 use Mix.Config
 
-# Configure Mix tasks and generators
-config :api,
-  ecto_repos: [Api.Repo]
+import_config "../apps/*/config/config.exs"
 
-config :api_web,
-  ecto_repos: [Api.Repo],
-  generators: [context_app: :api]
-
-# Configures the endpoint
-config :api_web, ApiWeb.Endpoint,
-  url: [host: "0.0.0.0"],
-  secret_key_base: "9XxB5ZypS/uSzEM7a6D1m15VpFKYbYb8kYr1+Z7WFOcp6Xc/gMelc9iLQ4K7Vx1l",
-  render_errors: [view: ApiWeb.ErrorView, accepts: ~w(json)],
-  pubsub: [name: ApiWeb.PubSub, adapter: Phoenix.PubSub.PG2]
-
-config :arc,
-  # or Arc.Storage.Local
-  storage: Arc.Storage.Local
-
-config :api_web, ApiWeb.Guardian,
-  issuer: "team_recruit",
-  secret_key: "Secret key. You can use `mix guardian.gen.secret` to get one"
-
-config :api_web, ApiWeb.Plugs.EnsureAuthenticatedPlug,
-  module: ApiWeb.Guardian,
-  error_handler: ApiWeb.Guardian.AuthErrorHandler
-
-# Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
