@@ -56,7 +56,7 @@ defmodule Database.Accounts do
     %User{}
     |> User.changeset(attrs)
     |> Repo.insert()
-
+    |> IO.inspect
   end
 
   @doc """
@@ -98,43 +98,13 @@ defmodule Database.Accounts do
 
   @doc """
     Creates a user within a social account connected.
-  """
-  def find_or_create(%{provider: provider, uid: uid} = profile) do
-    with %User{} = user <- get_user_by_profile(provider, uid) do
-      {:ok, Repo.preload(user, [:social_accounts, :teams])}
-    else
-      nil ->
-        create_user_from_profile(profile)
-    end
-  end
-
-  def find_or_create(%{provider: provider} = profile) do
-    create_user_from_profile(profile)
-  end
-
-  def create_user_from_profile(profile) do
-    attrs = %{
-      email: profile.email,
-      avatar: profile.avatar,
-      provider: profile.provider,
-      nickname: profile.name |> String.split() |> Enum.at(-1),
-      social_accounts: [profile]
-    }
-    
-    case create_user(attrs) do
-      {:ok, %User{} = user} ->
-        Repo.preload(user, [:social_accounts, :teams, :games])
-      {:error, err} -> {:error, err}
-    end
-  end
-
-  @doc """
     Connect an social account to a existing user
   """
   def find_or_create(
     %User{} = current_user,
     %{provider: provider, uid: uid} = profile
   ) do
+    IO.puts "asdf 3 ajsdfkljasd;fjklasdf"
     # if user does not have this provider
     case get_user_by_profile(provider, uid) do
       %User{} = user ->
@@ -142,6 +112,25 @@ defmodule Database.Accounts do
       nil ->
         add_social_account(current_user, profile)
         {:ok, current_user}
+    end
+  end
+
+  def find_or_create(%{provider: provider, uid: uid} = profile) do
+    IO.puts "asdf 2 ajsdfkljasd;fjklasdf"
+    with %User{} = user <- get_user_by_profile(provider, uid) do
+      {:ok, Repo.preload(user, [:social_accounts, :teams])}
+    else
+      nil ->
+        IO.puts "user not found"
+        attrs = %{
+          email: profile.email,
+          avatar: profile.avatar,
+          provider: profile.provider,
+          nickname: profile.name |> String.split() |> Enum.at(-1),
+          social_accounts: [profile]
+        }
+
+        create_user(attrs)
     end
   end
 

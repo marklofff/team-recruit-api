@@ -11,6 +11,7 @@ defmodule BaseApiWeb.AuthController do
   action_fallback BaseApiWeb.FallbackController
 
   def callback(%{assigns: %{user: user, auth: auth}} = conn, _params) do
+    IO.puts "should have user"
     with {:ok, %User{} = user} <- Accounts.find_or_create(user, auth),
          {:ok, token, _claims} <- Guardian.encode_and_sign(user) do
       render(conn, "authenticated_user.json", %{token: token, user: user})
@@ -18,6 +19,7 @@ defmodule BaseApiWeb.AuthController do
   end
 
   def callback(%{assigns: %{auth: auth}} = conn, _params) do
+    IO.puts "should nto have user"
     with {:ok, %User{} = user} <- Accounts.find_or_create(auth),
          {:ok, token, _claims} <- Guardian.encode_and_sign(user) do
       render(conn, "authenticated_user.json", %{token: token, user: user})

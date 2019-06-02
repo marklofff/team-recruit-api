@@ -1,5 +1,6 @@
 defmodule BaseApi.Guardian do
-  use Guardian, otp_app: :api_web
+  use Guardian, otp_app: :base_api
+
   alias Database.Accounts
   alias Database.Accounts.User
 

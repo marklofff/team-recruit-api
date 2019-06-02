@@ -1,4 +1,4 @@
-defmodule ApiWeb.Guardian.AuthErrorHandler do
+defmodule BaseAPi.Guardian.AuthErrorHandler do
   @moduledoc """
     Guardian ErrorHandler
   """

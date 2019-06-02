@@ -4,7 +4,7 @@ defmodule BaseApi.Plugs.ReformatParamsPlug do
   def init(options), do: options
 
   def call(conn, _options) do
-    profile = Api.Representer.to_map(conn.params)
+    profile = Database.Representer.to_map(conn.params)
     provider = String.to_atom(profile.provider)
 
     if profile do

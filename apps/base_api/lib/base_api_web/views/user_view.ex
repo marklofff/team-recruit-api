@@ -1,7 +1,7 @@
 defmodule BaseApiWeb.UserView do
   use BaseApiWeb, :view
   alias BaseApiWeb.{UserView}
-  alias Api.Avatar
+  alias ImageUploader.Avatar
 
   def render("index.json", %{users: users}) do
     %{data: render_many(users, UserView, "user.json")}

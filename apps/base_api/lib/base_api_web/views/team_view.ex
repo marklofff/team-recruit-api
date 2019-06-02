@@ -1,7 +1,7 @@
 defmodule BaseApiWeb.TeamView do
   use BaseApiWeb, :view
-  alias Api.TeamAvatar
-  alias Api.Avatar
+  alias ImageUploader.TeamAvatar
+  alias ImageUploader.Avatar
 
   def render("index.json", %{teams: teams}) do
     %{
