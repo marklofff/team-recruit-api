@@ -27,7 +27,6 @@ defmodule TeamRecruitApi.Umbrella.MixProject do
       {:ex_machina, "~> 2.3", only: :test},
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},
       {:mix_test_watch, "~> 0.8", only: :dev, runtime: false},
-      {:scribe, "~> 0.8", only: [:dev, :test]},
       {:ex_spec, "~> 2.0", only: :test},
       {:faker, "~> 0.12", only: :test},
     ]
