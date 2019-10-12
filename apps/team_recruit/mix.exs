@@ -38,7 +38,16 @@ defmodule TeamRecruit.MixProject do
     [
       {:ecto_sql, "~> 3.1"},
       {:postgrex, ">= 0.0.0"},
-      {:jason, "~> 1.0"}
+      {:jason, "~> 1.0"},
+      {:guardian, "~> 1.2"},
+      {:guardian_db, "~> 2.0"},
+      {:argon2_elixir, "~> 2.0"},
+      {:elixir_uuid, "~> 1.2"},
+      {:arc, "~> 0.11.0"},
+      {:httpoison, "~> 1.4"},
+      {:ecto_enum, "~> 1.3"},
+      {:arc_ecto, github: "qwexvf/arc_ecto"},
+      {:scrivener_ecto, "~> 2.0"},
     ]
   end
 

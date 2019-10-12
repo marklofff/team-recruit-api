@@ -10,6 +10,7 @@ defmodule TeamRecruit.Application do
       TeamRecruit.Repo
     ]
 
-    Supervisor.start_link(children, strategy: :one_for_one, name: TeamRecruit.Supervisor)
+    opts = [strategy: :one_for_one, name: TeamRecruit.Supervisor]
+    Supervisor.start_link(children, opts)
   end
 end
