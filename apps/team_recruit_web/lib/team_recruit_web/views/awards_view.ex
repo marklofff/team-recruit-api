@@ -1,5 +1,5 @@
-defmodule BaseApiWeb.AwardView do
-  use BaseApiWeb, :view
+defmodule TeamRecruitWeb.AwardsView do
+  use TeamRecruitWeb, :view
 
   def render("index.json", %{awards: awards}) do
     %{data: render_many(awards, __MODULE__, "award.json")}

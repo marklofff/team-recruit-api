@@ -12,12 +12,10 @@ defmodule TeamRecruit.TeamManager.Team do
     field :tag, :string
     field :bio, :string
     field :nation, :string
-    field :views, :integer
-    field :wanted, :boolean, default: false
-    field :wanted_num, :integer
 
     # avatar
-    field :avatar, ImageUploader.TeamAvatar.Type
+    field :avatar, TeamRecruit.TeamAvatar.Type
+    field :background_image, TeamRecruit.TeamBackgroundImage.Type
     field :uuid, :string
 
     # leader
@@ -36,10 +34,11 @@ defmodule TeamRecruit.TeamManager.Team do
   @doc false
   def changeset(team, attrs) do
     team
-    |> cast(attrs, [:name, :tag, :bio, :wanted_num, :views, :wanted, :nation, :language])
+    |> cast(attrs, [:name, :tag, :bio, :nation, :language])
     |> validate_required([:name, :tag])
     |> unique_constraint(:tag)
     |> TeamRecruit.Utils.check_uuid()
     |> cast_attachments(attrs, [:avatar], allow_paths: true)
+    |> cast_attachments(attrs, [:background_image], allow_paths: true)
   end
 end

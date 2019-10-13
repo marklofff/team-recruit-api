@@ -2,19 +2,19 @@ defmodule TeamRecruit.Repo.Migrations.CreateSteamAccount do
   use Ecto.Migration
 
   def change do
-    OauthProviderEnum.create_type()
+    TeamRecruit.EctoEnums.OauthProviderEnum.create_type()
 
-    create table(:social_accounts) do
+    create table(:oauth_social_accounts) do
       add :email, :string
       add :avatar, :string
       add :name, :string
       add :uid, :string
-      add :provider, :provider
+      add :provider, TeamRecruit.EctoEnums.OauthProviderEnum.type()
 
       add :user_id, references(:users, on_delete: :delete_all)
       timestamps()
     end
 
-    create unique_index(:social_accounts, [:uid])
+    create unique_index(:oauth_social_accounts, [:uid])
   end
 end

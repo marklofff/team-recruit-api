@@ -41,6 +41,26 @@ defmodule TeamRecruit.Accounts do
   end
 
   @doc """
+  Gets a single user by email.
+
+  ## Examples
+
+      iex> get_user_by_email!(123)
+      %User{...}
+
+      iex> get_user_by_email!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_user_by_email!(email) do
+    Repo.one!(
+      from u in User,
+      where: u.email == ^email,
+      preload: [:social_accounts, :teams, :games]
+    )
+  end
+
+  @doc """
   Creates a user.
 
   ## Examples

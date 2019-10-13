@@ -1,5 +1,5 @@
-defmodule BaseApiWeb.ProfileView do
-  use BaseApiWeb, :view
+defmodule TeamRecruitWeb.ProfileView do
+  use TeamRecruitWeb, :view
 
   def render("games_list.json", %{games: games}) do
     %{data: render_many(games, __MODULE__, "game.json", as: :game)}

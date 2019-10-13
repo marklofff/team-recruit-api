@@ -3,7 +3,7 @@ defmodule TeamRecruit.Repo.Migrations.AddProviderEnumToUsers do
 
   def change do
     alter table(:users) do
-      add :provider, :provider
+      add :oauth_provider, TeamRecruit.EctoEnums.OauthProviderEnum.type()
     end
   end
 end

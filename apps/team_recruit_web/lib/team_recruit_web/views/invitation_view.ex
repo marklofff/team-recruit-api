@@ -1,5 +1,5 @@
-defmodule BaseApiWeb.InvitationView do
-  use BaseApiWeb, :view
+defmodule TeamRecruitWeb.InvitationView do
+  use TeamRecruitWeb, :view
 
   def render("index.json", %{invitations: invitations}) do
     %{data: render_many(invitations, __MODULE__, "invitation.json", as: :invitation)}

@@ -1,7 +1,8 @@
-defmodule BaseApiWeb.TeamView do
-  use BaseApiWeb, :view
-  alias ImageUploader.TeamAvatar
-  alias ImageUploader.Avatar
+defmodule TeamRecruitWeb.TeamView do
+  use TeamRecruitWeb, :view
+  alias TeamRecruit.TeamAvatar
+  alias TeamRecruit.TeamBackgroundImage
+  alias TeamRecruit.Avatar
 
   def render("index.json", %{teams: teams}) do
     %{
@@ -28,7 +29,8 @@ defmodule BaseApiWeb.TeamView do
       tag: team.tag,
       bio: team.bio,
       avatar: TeamAvatar.url({team.avatar, team}, :thumb),
-      leader: render_one(team.user, BaseApiWeb.UserView, "user.json")
+      background_image: TeamBackgroundImage.url({team.background_image, team}, :thumb),
+      leader: render_one(team.user, TeamRecruitWeb.UserView, "user.json")
     }
   end
 
@@ -40,17 +42,15 @@ defmodule BaseApiWeb.TeamView do
       name: team.name,
       tag: team.tag,
       bio: team.bio,
-      wanted_num: team.wanted_num,
-      views: team.views,
-      wanted: team.wanted,
       nation: team.nation,
       avatar: TeamAvatar.url({team.avatar, team}, :thumb),
+      background_image: TeamBackgroundImage.url({team.background_image, team}, :thumb),
       language: team.language,
       inserted_at: team.inserted_at,
-      leader: render_one(team.user, BaseApiWeb.UserView, "user.json"),
-      games: render_many(team.games, BaseApiWeb.GameView, "game.json"),
+      leader: render_one(team.user, TeamRecruitWeb.UserView, "user.json"),
+      games: render_many(team.games, TeamRecruitWeb.GameView, "game.json"),
       members: Enum.count(team.members),
-      awards: render_many(team.awards, BaseApiWeb.AwardsView, "award.json")
+      awards: render_many(team.awards, TeamRecruitWeb.AwardsView, "award.json")
     }
   end
 
@@ -61,7 +61,7 @@ defmodule BaseApiWeb.TeamView do
       bio: members.user.bio,
       avatar: Avatar.url({members.user.avatar, members.user}, :original),
       uuid: members.user.uuid,
-      games: render_many(members.user.games, BaseApiWeb.GameView, "game.json")
+      games: render_many(members.user.games, TeamRecruitWeb.GameView, "game.json")
     }
   end
 end

@@ -3,15 +3,17 @@ defmodule TeamRecruit.Accounts.User do
   use Ecto.Schema
   use Arc.Ecto.Schema
 
+  alias TeamRecruit.EctoEnums.OauthProviderEnum
+
   schema "users" do
     field :avatar, TeamRecruit.Avatar.Type
     field :nickname, :string
     field :uuid, :string
     field :bio, :string
-    field :oauth_provider, OauthProviderEnum
     field :email, :string
     field :encrypted_password, :string
     field :password, :string, virtual: true
+    field :oauth_provider, OauthProviderEnum
 
     # has_one :identity_account, TeamRecruit.Accounts.SteamAccount
     has_many :social_accounts, TeamRecruit.Accounts.SocialAccounts
@@ -25,7 +27,7 @@ defmodule TeamRecruit.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:uuid, :nickname, :provider, :email])
+    |> cast(attrs, [:uuid, :nickname, :oauth_provider, :email])
     |> cast_assoc(:social_accounts)
     |> validate_required([])
     |> TeamRecruit.Utils.check_uuid()

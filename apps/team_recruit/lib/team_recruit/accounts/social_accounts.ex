@@ -2,12 +2,14 @@ defmodule TeamRecruit.Accounts.SocialAccounts do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias TeamRecruit.EctoEnums.OauthProviderEnum
+
   schema "oauth_social_accounts" do
     field :email, :string
     field :name, :string
     field :avatar, :string
     field :uid, :string
-    field :provider, OauthProviderEnums
+    field :provider, OauthProviderEnum
 
     belongs_to :user, TeamRecruit.Accounts.User
     timestamps()
