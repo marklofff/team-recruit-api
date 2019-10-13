@@ -13,8 +13,8 @@ defmodule TeamRecruitWeb.AuthController do
     end
   end
 
-  def login(conn, params) do
-    with %Accounts.User{} = user <- Accounts.get_user_by_email(params.email),
+  def login(conn, %{"user" => params}) do
+    with %Accounts.User{} = user <- Accounts.get_user_by_email!(params["email"]),
          {:ok, token, _claims} <- Guardian.encode_and_sign(user) do
       render(conn, "authenticated_user.json", %{token: token, user: user})
     end
