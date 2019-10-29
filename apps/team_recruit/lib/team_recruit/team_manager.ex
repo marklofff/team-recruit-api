@@ -6,15 +6,15 @@ defmodule TeamRecruit.TeamManager do
   import Ecto.Query, warn: false
 
   alias TeamRecruit.Repo
-  alias TeamRecruit.TeamManager.{Team, Member}
+  alias TeamRecruit.TeamManager.{Team, Member, JoinRequest}
 
   @doc """
   Returns the list of teams.
 
   ## Examples
 
-      iex> list_teams()
-      [%Team{}, ...]
+  iex> list_teams()
+  [%Team{}, ...]
 
   """
   def list_teams do
@@ -37,29 +37,25 @@ defmodule TeamRecruit.TeamManager do
 
   ## Examples
 
-      iex> get_team!(123)
-      %Team{}
+  iex> get_team!(123)
+  %Team{}
 
-      iex> get_team!(456)
-      ** (Ecto.NoResultsError)
+  iex> get_team!(456)
+  ** (Ecto.NoResultsError)
 
   """
   def get_team!(id) do
-    query =
-      from t in Team,
-        where: t.id == ^id,
-        preload: [:user, :members, :awards, :games]
-
-    Repo.one!(query)
+    Team
+    |> where([t], t.id == ^id)
+    |> preload([t], [:user, [members: :user], :awards, :games])
+    |> Repo.one!()
   end
 
   def get_team_by_tag!(tag) do
-    query =
-      from t in Team,
-        where: t.tag == ^tag,
-        preload: [:user, [members: :user], :awards, :games]
-
-    Repo.one!(query)
+    Team
+    |> where([t], t.tag == ^tag)
+    |> preload([t], [:user, [members: :user], :awards, :games])
+    |> Repo.one!()
   end
 
   @doc """
@@ -69,32 +65,33 @@ defmodule TeamRecruit.TeamManager do
 
   ## Examples
 
-      iex> get_team!(123)
-      %Team{}
+  iex> get_team!(123)
+  %Team{}
 
-      iex> get_team!(456)
-      ** (Ecto.NoResultsError)
+  iex> get_team!(456)
+  ** (Ecto.NoResultsError)
 
   """
   def get_my_teams(user_id) do
     query =
       from t in Team,
-        where: t.user_id == ^user_id,
-        preload: [:user, :members, :awards, :games]
+      where: t.user_id == ^user_id,
+      preload: [:user, :members, :awards, :games]
 
     Repo.all(query)
   end
+
 
   @doc """
   Creates a team.
 
   ## Examples
 
-      iex> create_team(%{field: value})
-      {:ok, %Team{}}
+  iex> create_team(%{field: value})
+  {:ok, %Team{}}
 
-      iex> create_team(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+  iex> create_team(%{field: bad_value})
+  {:error, %Ecto.Changeset{}}
 
   """
   def create_team(user_id, attrs \\ %{}) do
@@ -113,10 +110,22 @@ defmodule TeamRecruit.TeamManager do
 
     query =
       from t in Team,
-        where: t.id == ^team.id,
-        preload: [:user, :members, :games, :awards]
+      where: t.id == ^team.id,
+      preload: [:user, :members, :games, :awards]
 
     {:ok, Repo.one(query)}
+  end
+
+  def add_member(%JoinRequest{} = join_request) do
+    if join_request.accepted do
+      {:ok, join_request}
+    else
+      Repo.transaction(fn -> 
+        {:ok, updated_join_request} = update_join_request(join_request, %{accepted: true})
+
+        add_member(updated_join_request.team.id, updated_join_request.user.id)
+      end)
+    end
   end
 
   def add_member(team_id, user_id, attrs \\ %{}) do
@@ -125,9 +134,21 @@ defmodule TeamRecruit.TeamManager do
     |> Repo.insert()
   end
 
+  def delete_member(team_id, user_id) do
+    member =
+      Member
+      |> preload([m], [:user, :team])
+      |> where([m], m.user_id == ^user_id)
+      |> where([m], m.team_id == ^team_id)
+      |> Repo.one
+
+     Repo.delete(member)
+  end
+
   def add_game(team_id, game_id, _attrs \\ %{}) do
     team =
-      get_team!(team_id)
+      team_id
+      |> get_team!()
       |> Repo.preload([:user, :games])
 
     game = TeamRecruit.Games.get_game!(game_id)
@@ -149,11 +170,11 @@ defmodule TeamRecruit.TeamManager do
 
   ## Examples
 
-      iex> update_team(team, %{field: new_value})
-      {:ok, %Team{}}
+  iex> update_team(team, %{field: new_value})
+  {:ok, %Team{}}
 
-      iex> update_team(team, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+  iex> update_team(team, %{field: bad_value})
+  {:error, %Ecto.Changeset{}}
 
   """
   def update_team(%Team{} = team, attrs) do
@@ -167,15 +188,93 @@ defmodule TeamRecruit.TeamManager do
 
   ## Examples
 
-      iex> delete_team(team)
-      {:ok, %Team{}}
+  iex> delete_team(team)
+  {:ok, %Team{}}
 
-      iex> delete_team(team)
-      {:error, %Ecto.Changeset{}}
+  iex> delete_team(team)
+  {:error, %Ecto.Changeset{}}
 
   """
   def delete_team(%Team{} = team) do
     Repo.delete(team)
+  end
+
+  def create_join_request(user_id, team_id) do
+    join_request = 
+      %JoinRequest{user_id: user_id, team_id: team_id}
+      |> JoinRequest.changeset(%{})
+      |> Repo.insert()
+
+    case join_request do
+      {:ok, %JoinRequest{} = join_request} ->
+        {:ok, Repo.preload(join_request, [:user, :team])}
+      {:error, changeset} ->
+        {:error, changeset}
+    end
+  end
+
+  def list_join_requests(%{team_id: team_id}, params) do
+    JoinRequest
+    |> where([j], j.team_id == ^team_id)
+    |> preload([:user, [team: :user]])
+    |> Repo.paginate(params)
+  end
+
+  def list_join_requests(%{user_id: user_id}, params) do
+    JoinRequest
+    |> where([j], j.user_id == ^user_id)
+    |> preload([j], [:user, [team: :user]])
+    |> Repo.paginate(params)
+  end
+
+  @doc """
+  Gets a JoinRequest by id
+
+  ## Examples
+
+  iex> get_join_request(1)
+  {:ok, %JoinRequest{...}}
+
+  iex> get_join_request(1)
+  ** (Ecto.NoResultsError)
+  """
+  def get_join_request(request_id) do
+    JoinRequest
+    |> where([j], j.id == ^request_id)
+    |> preload([j], [:user, [team: :user]])
+    |> Repo.one!()
+  end
+
+  @doc """
+  Accepts a JoinRequest by id
+
+  ## Examples
+
+  iex> get_join_request(1)
+  {:ok, %JoinRequest{...}}
+
+  iex> get_join_request(1)
+  ** (Ecto.NoResultsError)
+  """
+  def update_join_request(%JoinRequest{} = join_request, attrs) do
+    join_request
+    |> JoinRequest.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a JoinRequest.
+
+  ## Examples
+
+  iex> delete_join_request(request_id)
+  {:ok, %JoinRequests{}}}
+
+  iex> delete_join_request(request_id)
+  ** {:error, %Ecto.Changeset{}}
+  """
+  def delete_join_request(%JoinRequest{} = join_request) do
+    Repo.delete(join_request)
   end
 
   @doc """
@@ -183,8 +282,8 @@ defmodule TeamRecruit.TeamManager do
 
   ## Examples
 
-      iex> change_team(team)
-      %Ecto.Changeset{source: %Team{}}
+  iex> change_team(team)
+  %Ecto.Changeset{source: %Team{}}
 
   """
   def change_team(%Team{} = team) do

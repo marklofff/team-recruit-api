@@ -21,8 +21,6 @@ defmodule TeamRecruitWeb.TeamView do
   end
 
   def render("minimal_team.json", %{team: team}) do
-    IO.inspect(team)
-
     %{
       id: team.id,
       name: team.name,
@@ -30,13 +28,10 @@ defmodule TeamRecruitWeb.TeamView do
       bio: team.bio,
       avatar: TeamAvatar.url({team.avatar, team}, :thumb),
       background_image: TeamBackgroundImage.url({team.background_image, team}, :thumb),
-      leader: render_one(team.user, TeamRecruitWeb.UserView, "user.json")
     }
   end
 
   def render("team.json", %{team: team}) do
-    IO.inspect(team)
-
     %{
       id: team.id,
       name: team.name,
@@ -49,7 +44,7 @@ defmodule TeamRecruitWeb.TeamView do
       inserted_at: team.inserted_at,
       leader: render_one(team.user, TeamRecruitWeb.UserView, "user.json"),
       games: render_many(team.games, TeamRecruitWeb.GameView, "game.json"),
-      members: Enum.count(team.members),
+      members: render_many(team.members, TeamRecruitWeb.UserView, "user.json", as: :member),
       awards: render_many(team.awards, TeamRecruitWeb.AwardsView, "award.json")
     }
   end

@@ -76,7 +76,6 @@ defmodule TeamRecruit.Accounts do
     %User{}
     |> User.changeset(attrs)
     |> Repo.insert()
-    |> IO.inspect
   end
 
   @doc """
@@ -124,7 +123,6 @@ defmodule TeamRecruit.Accounts do
     %User{} = current_user,
     %{provider: provider, uid: uid} = profile
   ) do
-    IO.puts "asdf 3 ajsdfkljasd;fjklasdf"
     # if user does not have this provider
     case get_user_by_profile(provider, uid) do
       %User{} = user ->
@@ -136,12 +134,10 @@ defmodule TeamRecruit.Accounts do
   end
 
   def find_or_create(%{provider: provider, uid: uid} = profile) do
-    IO.puts "asdf 2 ajsdfkljasd;fjklasdf"
     with %User{} = user <- get_user_by_profile(provider, uid) do
       {:ok, Repo.preload(user, [:social_accounts, :teams])}
     else
       nil ->
-        IO.puts "user not found"
         attrs = %{
           email: profile.email,
           avatar: profile.avatar,

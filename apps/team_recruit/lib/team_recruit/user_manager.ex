@@ -57,7 +57,6 @@ defmodule TeamRecruit.UserManager do
 
   def check_user(%Apply{} = apply, %TeamRecruit.Accounts.User{} = user) do
     if apply.user_id == user.id do
-      IO.puts("is user")
       true
     else
       {:error, "No permission."}
@@ -78,7 +77,6 @@ defmodule TeamRecruit.UserManager do
   """
   def create_apply(%{"user" => user} = attrs \\ %{}) do
     team = TeamRecruit.TeamManager.get_team!(attrs["team_id"])
-    IO.inspect(user.id)
 
     if user.id == team.user_id do
       %Apply{team_id: attrs["team_id"], user_id: attrs["user_id"]}

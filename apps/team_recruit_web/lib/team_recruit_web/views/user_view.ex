@@ -21,6 +21,16 @@ defmodule TeamRecruitWeb.UserView do
     }
   end
 
+  def render("user.json", %{member: %{user: user}}) do
+    %{
+      id: user.id,
+      nickname: user.nickname,
+      bio: user.bio,
+      avatar: Avatar.url({user.avatar, user}, :original),
+      uuid: user.uuid
+    }
+  end
+
   def render("user.json", %{user: user}) do
     %{
       id: user.id,
@@ -38,8 +48,6 @@ defmodule TeamRecruitWeb.UserView do
       bio: user.bio,
       avatar: Avatar.url({user.avatar, user}, :original),
       uuid: user.uuid,
-      # social_accounts: render_many(user.social_accounts,
-        # __MODULE__, "social_accounts.json", as: :social_accounts),
       email: user.email
     }
   end

@@ -6,8 +6,8 @@ defmodule TeamRecruitWeb.Router do
   end
 
   pipeline :authenticated do
-    #plug TeamRecruitWeb.Plugs.EnsureAuthenticatedPlug
-    #plug TeamRecruitWeb.Plugs.FetchUserPlug
+    plug TeamRecruitWeb.Plugs.EnsureAuthenticatedPlug
+    plug TeamRecruitWeb.Plugs.FetchUserPlug
   end
 
   pipeline :fetch_available_user do
@@ -21,14 +21,22 @@ defmodule TeamRecruitWeb.Router do
   end
 
   scope "/api", TeamRecruitWeb do
-    pipe_through [:api]
-
-    post "/register", AuthController, :register
-    post "/login", AuthController, :login
+    pipe_through [:api, :authenticated]
 
     resources "/teams", TeamController, only: [:index]
+    get "/teams/:tag", TeamController, :show
+
+    # JoinRequests
+    post "/teams/join_request/create", JoinRequestController, :create
+    get "/team/:id/join_request/list", JoinRequestController, :list_join_requests
+    post "/teams/join_request/accept/:id", JoinRequestController, :accept_join_request
+    delete "/teams/join_request/delete/:id", JoinRequestController, :delete_join_request
+
+
+    # Players
     resources "/players", UserController, only: [:index]
 
+    # Oauth
     scope "/oauth" do
       pipe_through :fetch_available_user
 
@@ -39,13 +47,14 @@ defmodule TeamRecruitWeb.Router do
     get "/me/teams", TeamController, :get_my_teams
     # get "/me/notifications", InvitationController, :index
 
-    resources "/teams", TeamController do
-      resources "/apply", ApplyController
-    end
+    resources "/teams", TeamController
+    resources "/players", UserController, only: [:show]
+  end
 
-    resources "/players", UserController, only: [:show] do
-      resources "/invitation", InvitationController
-    end
+  scope "/api/auth", TeamRecruitWeb do
+    pipe_through [:api]
 
+    post "/register", AuthController, :register
+    post "/login", AuthController, :login
   end
 end
