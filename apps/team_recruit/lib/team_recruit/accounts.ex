@@ -12,8 +12,8 @@ defmodule TeamRecruit.Accounts do
 
   ## Examples
 
-      iex> list_users()
-      [%User{}, ...]
+  iex> list_users()
+  [%User{}, ...]
 
   """
   def list_users do
@@ -25,18 +25,18 @@ defmodule TeamRecruit.Accounts do
 
   ## Examples
 
-      iex> get_user!(123)
-      %User{...}
+  iex> get_user!(123)
+  %User{...}
 
-      iex> get_user!(456)
-      ** (Ecto.NoResultsError)
+  iex> get_user!(456)
+  ** (Ecto.NoResultsError)
 
   """
   def get_user!(id) do
     Repo.one!(
       from u in User,
       where: u.id == ^id,
-      preload: [:social_accounts, :teams, :games]
+      preload: [:teams, :games]
     )
   end
 
@@ -45,11 +45,11 @@ defmodule TeamRecruit.Accounts do
 
   ## Examples
 
-      iex> get_user_by_email!(123)
-      %User{...}
+  iex> get_user_by_email!(123)
+  %User{...}
 
-      iex> get_user_by_email!(456)
-      ** (Ecto.NoResultsError)
+  iex> get_user_by_email!(456)
+  ** (Ecto.NoResultsError)
 
   """
   def get_user_by_email!(email) do
@@ -65,11 +65,11 @@ defmodule TeamRecruit.Accounts do
 
   ## Examples
 
-      iex> create_user(%{field: value})
-      {:ok, %User{}}
+  iex> create_user(%{field: value})
+  {:ok, %User{}}
 
-      iex> create_user(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+  iex> create_user(%{field: bad_value})
+  {:error, %Ecto.Changeset{}}
 
   """
   def create_user(attrs \\ %{}) do
@@ -83,11 +83,11 @@ defmodule TeamRecruit.Accounts do
 
   ## Examples
 
-      iex> add_social_account(user, %{...fields})
-      {:ok, %SocialAccounts{}}
+  iex> add_social_account(user, %{...fields})
+  {:ok, %SocialAccounts{}}
 
-      iex> add_social_account(user, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+  iex> add_social_account(user, %{field: bad_value})
+  {:error, %Ecto.Changeset{}}
 
   """
   def add_social_account(%User{} = user, social_account) do
@@ -115,14 +115,7 @@ defmodule TeamRecruit.Accounts do
     User.changeset(user, %{})
   end
 
-  @doc """
-    Creates a user within a social account connected.
-    Connect an social account to a existing user
-  """
-  def find_or_create(
-    %User{} = current_user,
-    %{provider: provider, uid: uid} = profile
-  ) do
+  def find_or_create(%User{} = current_user, %{provider: provider, uid: uid} = profile) do
     # if user does not have this provider
     case get_user_by_profile(provider, uid) do
       %User{} = user ->
@@ -134,9 +127,9 @@ defmodule TeamRecruit.Accounts do
   end
 
   def find_or_create(%{provider: provider, uid: uid} = profile) do
-    with %User{} = user <- get_user_by_profile(provider, uid) do
-      {:ok, Repo.preload(user, [:social_accounts, :teams])}
-    else
+    case get_user_by_profile(provider, uid) do
+      %User{} = user ->
+        {:ok, Repo.preload(user, [:social_accounts, :teams])}
       nil ->
         attrs = %{
           email: profile.email,
@@ -145,7 +138,6 @@ defmodule TeamRecruit.Accounts do
           nickname: profile.name |> String.split() |> Enum.at(-1),
           social_accounts: [profile]
         }
-
         create_user(attrs)
     end
   end
@@ -174,8 +166,8 @@ defmodule TeamRecruit.Accounts do
   defp get_by_email(email) when is_binary(email) do
     query =
       from u in User,
-        where: u.email == ^email,
-        preload: [:steam_account]
+      where: u.email == ^email,
+      preload: [:steam_account]
 
     case Repo.one(query) do
       nil -> {:error, "Login error."}

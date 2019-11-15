@@ -20,8 +20,9 @@ defmodule TeamRecruitWeb.Router do
     # plug TeamRecruitWeb.Plugs.FetchAvailableUserPlug
   end
 
-  scope "/api", TeamRecruitWeb do
-    pipe_through [:api, :authenticated]
+
+  scope "/api/v1",TeamRecruitWeb, as: :v1 do
+    pipe_through [:api]
 
     resources "/teams", TeamController, only: [:index]
     get "/teams/:tag", TeamController, :show
@@ -49,12 +50,8 @@ defmodule TeamRecruitWeb.Router do
 
     resources "/teams", TeamController
     resources "/players", UserController, only: [:show]
-  end
 
-  scope "/api/auth", TeamRecruitWeb do
-    pipe_through [:api]
-
-    post "/register", AuthController, :register
-    post "/login", AuthController, :login
+    get "/top_teams", TeamController, :index
+    get "/top_players", UserController, :index
   end
 end
