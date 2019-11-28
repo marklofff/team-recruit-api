@@ -27,9 +27,9 @@ defmodule TeamRecruit.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:uuid, :nickname, :oauth_provider, :email])
+    |> cast(attrs, [:uuid, :nickname, :oauth_provider, :email, :password, :encrypted_password])
     |> cast_assoc(:social_accounts)
-    |> validate_required([])
+    |> validate_required([:nickname, :email, :password])
     |> TeamRecruit.Utils.check_uuid()
     |> cast_attachments(attrs, [:avatar], allow_urls: true)
     |> unique_constraint(:email)

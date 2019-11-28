@@ -59,3 +59,6 @@ config :phoenix, :stacktrace_depth, 20
 config :team_recruit, TeamRecruit.Guardian,
   issuer: "team_recruit",
   secret_key: "HOGE"
+
+config :arc,
+  storage: Arc.Storage.Local # or Arc.Storage.Local

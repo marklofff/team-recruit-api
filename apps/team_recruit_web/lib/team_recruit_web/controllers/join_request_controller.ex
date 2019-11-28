@@ -7,9 +7,7 @@ defmodule TeamRecruitWeb.JoinRequestController do
 
   action_fallback TeamRecruitWeb.FallbackController
 
-  def list_join_requests(%{assigns: %{user: current_user}} = conn,
-    %{"id" => id} = params
-  ) do
+  def list_join_requests(%{assigns: %{user: current_user}} = conn, %{"id" => id} = params) do
     team = TeamManager.get_team!(id)
 
     if TeamManager.is_team_leader?(current_user, team) do
@@ -23,10 +21,7 @@ defmodule TeamRecruitWeb.JoinRequestController do
     end
   end
 
-  def create(%{assigns: %{user: current_user}} = conn,
-    %{"team_id" => team_id} = params
-  ) do
-
+  def create(%{assigns: %{user: current_user}} = conn, %{"team_id" => team_id}) do
     with {:ok, join_request} <- TeamManager.create_join_request(current_user.id, team_id) do
       render(conn, "show.json", join_request: join_request)
     end
