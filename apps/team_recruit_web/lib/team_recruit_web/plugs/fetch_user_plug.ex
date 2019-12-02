@@ -10,7 +10,6 @@ defmodule TeamRecruitWeb.Plugs.FetchUserPlug do
         |> put_resp_content_type("apllication/json")
         |> send_resp(403, Jason.encode!(%{error: "Invalid credentials"}))
         |> halt
-
       user ->
         assign(conn, :user, user)
     end
