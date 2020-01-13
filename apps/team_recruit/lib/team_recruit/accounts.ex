@@ -41,6 +41,26 @@ defmodule TeamRecruit.Accounts do
   end
 
   @doc """
+  Gets a single user by nickname
+
+  ## Examples
+
+  iex> get_user_by_nickname!("asdf")
+  %User{...}
+
+  iex> get_user_by_nickname!("asdf")
+  ** (Ecto.NoResultsError)
+
+  """
+  def get_user_by_nickname!(nickname) do
+    Repo.one!(
+      from u in User,
+      where: u.nickname == ^nickname,
+      preload: [:teams, :games]
+    )
+  end
+
+  @doc """
   Gets a single user by email.
 
   ## Examples

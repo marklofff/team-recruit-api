@@ -7,8 +7,7 @@ defmodule TeamRecruit.Utils do
   def check_uuid(changeset) do
     case get_field(changeset, :uuid) do
       nil ->
-        force_change(changeset, :uuid, UUID.uuid4())
-
+        force_change(changeset, :uuid, UUID.uuid4(:hex))
       _ ->
         changeset
     end

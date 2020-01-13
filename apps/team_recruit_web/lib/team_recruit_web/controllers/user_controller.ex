@@ -24,6 +24,11 @@ defmodule TeamRecruitWeb.UserController do
     render(conn, "show.json", user: user)
   end
 
+  def show(conn, %{"nickname" => nickname}) do
+    user = Accounts.get_user_by_nickname!(nickname)
+    render(conn, "show.json", user: user)
+  end
+
   def update(conn, %{"id" => id, "user" => user_params}) do
     user = Accounts.get_user!(id)
 

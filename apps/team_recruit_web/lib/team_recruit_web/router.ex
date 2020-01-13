@@ -26,6 +26,7 @@ defmodule TeamRecruitWeb.Router do
 
     resources "/teams", TeamController, only: [:index]
     get "/teams/:tag", TeamController, :show
+    get "/players/nickname/:nickname", UserController, :show
 
     # JoinRequests
     post "/teams/join_request/create", JoinRequestController, :create
