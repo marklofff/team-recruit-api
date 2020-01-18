@@ -44,13 +44,13 @@ defmodule TeamRecruitWeb.JoinRequestController do
   end
 
   def cancel_join_request(conn, %{"user_id" => user_id, "team_id" => team_id}) do
-    with {:ok, _join_reqest} <- TeamManager.delete_join_request(user_id, team_id) do
+    with {:ok, _join_reqest} <- TeamManager.cancel_join_request(user_id, team_id) do
       json(conn, %{success: true})
     end
   end
 
   def deny_join_request(conn, %{"user_id" => user_id, "team_id" => team_id}) do
-    with {:ok, _updated_team} <- TeamManager.add_member(user_id, team_id) do
+    with {:ok, _updated_team} <- TeamManager.deny_join_request(user_id, team_id) do
       json(conn, %{success: true})
     end
   end

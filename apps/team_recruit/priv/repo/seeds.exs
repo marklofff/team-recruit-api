@@ -62,10 +62,6 @@ for x <- 1..50 do
     password: "12345678",
   })
 
-  image = HTTPoison.get!("https://picsum.photos/id/#{x}/200/300")
-  File.write!("candidate_pics/#{x}.jpeg", image.body, [:binary])
-  IO.inspect image
-
   new_team = %Team{
     user_id: user.id,
     name: "Team #{x}",
@@ -77,7 +73,7 @@ for x <- 1..50 do
     Repo.insert!(
       Team.changeset(
         new_team,
-        %{"avatar" => Path.expand("candidate_pics/#{x}.jpeg")}
+        %{"avatar" => Path.expand("candidate_pics/2.jpg")}
       )
     )
 

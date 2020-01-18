@@ -17,7 +17,7 @@ ENV PATH=./node_modules/.bin:$PATH \
 # Install Phoenix packages
 RUN mix local.hex --force && \
       mix local.rebar --force && \
-      mix archive.install --force hex phx_new 1.4.10
+      mix archive.install --force hex phx_new 1.4.11
 
 WORKDIR /opt/app
 ADD . /opt/app

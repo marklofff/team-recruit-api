@@ -24,6 +24,16 @@ defmodule TeamRecruit.TeamManager do
     |> Repo.all()
   end
 
+
+  @doc """
+  Returns the list of teams.
+
+  ## Examples
+
+  iex> paginate_teams()
+  [%Team{}, ...]
+
+  """
   def paginate_teams(params \\ %{}) do
     Team
     |> preload([:user, :members, :games])
@@ -71,14 +81,13 @@ defmodule TeamRecruit.TeamManager do
   iex> get_team!(456)
   ** (Ecto.NoResultsError)
 
+  TODO: paginate when there's more than 5
   """
   def get_my_teams(user_id) do
-    query =
-      from t in Team,
-      where: t.user_id == ^user_id,
-      preload: [:user, :members, :awards, :games]
-
-    Repo.all(query)
+      Team
+      |> where([t], t.user_id == ^user_id)
+      |> preload([t], [:user, :members, :awards, :games])
+      |> Repo.all()
   end
 
 
@@ -109,9 +118,9 @@ defmodule TeamRecruit.TeamManager do
       |> Repo.insert!()
 
     query =
-      from t in Team,
-      where: t.id == ^team.id,
-      preload: [:user, :members, :games, :awards]
+      Team
+      |> where([t], t.id == ^team.id)
+      |> preload([t], [:user, :members, :games, :awards])
 
     {:ok, Repo.one(query)}
   end
