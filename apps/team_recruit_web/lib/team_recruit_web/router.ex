@@ -20,6 +20,19 @@ defmodule TeamRecruitWeb.Router do
     # plug TeamRecruitWeb.Plugs.FetchAvailableUserPlug
   end
 
+  forward "/graphiql", Absinthe.Plug.GraphiQL, schema: TeamRecruitWeb.Schema, interface: :advanced
+
+  scope "/api" do
+    pipe_through :api
+
+    forward  "/", Absinthe.Plug, schema: TeamRecruitWeb.Schema, json_codec: Jason
+
+    if Mix.env() == :dev do
+    else
+      forward "/graphql", Absinthe.Plug, schema: TeamRecruitWeb.Schema
+    end
+
+  end
 
   scope "/api/v1",TeamRecruitWeb, as: :v1 do
     pipe_through [:api]

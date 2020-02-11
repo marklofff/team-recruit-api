@@ -52,8 +52,6 @@ for game <- games do
   })
 end
 
-HTTPoison.start()
-
 for x <- 1..50 do
   {:ok, user} = Accounts.create_user(%{
     nickname: "user#{x}",

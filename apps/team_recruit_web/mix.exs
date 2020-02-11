@@ -24,7 +24,7 @@ defmodule TeamRecruitWeb.MixProject do
   def application do
     [
       mod: {TeamRecruitWeb.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :absinthe_plug]
     ]
   end
 
@@ -47,6 +47,9 @@ defmodule TeamRecruitWeb.MixProject do
       {:cors_plug, "~> 2.0"},
       {:guardian, "~> 1.2"},
       {:argon2_elixir, "~> 2.0"},
+      {:absinthe, "~> 1.4.0"},
+      {:absinthe_plug, "~> 1.4.0"},
+      {:dataloader, "~> 1.0.0"}
     ]
   end
 

@@ -31,7 +31,7 @@ defmodule TeamRecruit.Umbrella.MixProject do
 
   defp aliases do
     [
-      "ecto.setup": ["ecto.create", "ecto.migrate", "run ./apps/team_recruit/priv/repo/seeds.exs"],
+      "ecto.setup": ["ecto.drop", "ecto.create", "ecto.migrate", "run ./apps/team_recruit/priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
